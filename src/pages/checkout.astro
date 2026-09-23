@@ -1,0 +1,355 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const cities = ['Київ', 'Львів', 'Дніпро', 'Одеса', 'Харків', 'Вінниця', 'Запоріжжя', 'Полтава', 'Чернівці', 'Івано-Франківськ'];
+
+const deliveryOptions = [
+  ['novaposhta', 'Нова пошта (відділення / поштомат)', 'Оплата завтра до 14:00 · Оплата перед отриманням', '0 ₴', true],
+  ['pickup', 'Самовивіз із магазину Технопростір', 'Київ, вул. Хрещатик, 22 · Готовий до видачі', '0 ₴', false],
+  ['courier', 'Кур’єр Нової Пошти до дверей', 'Доставка до квартири/офісу з підйомом', 'від 120 ₴', false],
+  ['ukrposhta', 'Укрпошта Експрес', 'По всій Україні у відділення', 'від 45 ₴', false],
+];
+
+const paymentOptions = [
+  ['card', 'Оплата онлайн карткою або гаманцем', 'Apple Pay, Google Pay, Visa, Mastercard · Швидка оплата в один клік через біометрію', '0%', true],
+  ['installments', 'Оплата частинами 0%', 'monobank, ПриватБанк, А-Банк · до 24 платежів', '0% розстрочка', false],
+  ['cod', 'Оплата при отриманні (післяплата)', 'Тільки карткою або переказом у відділенні', '2% + 20 ₴', false],
+  ['invoice', 'Безготівковий розрахунок (для юросіб)', 'Рахунок-фактура та повний пакет бухгалтерських документів', 'з ПДВ 20%', false],
+];
+---
+<BaseLayout
+  title="Оформлення замовлення — ТЕХНОПРОСТІР"
+  description="Оформлення замовлення в ТЕХНОПРОСТІР: контактні дані, доставка Новою Поштою або самовивіз, оплата карткою, частинами або при отриманні."
+>
+  <div class="shell py-space-md">
+    <!-- Верхній рядок -->
+    <div class="mb-space-sm flex flex-wrap items-center justify-between gap-space-sm">
+      <nav class="flex items-center gap-1 text-body-sm text-on-surface-variant">
+        <a href="/" class="hover:text-primary">Головна</a>
+        <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+        <a href="/cart" class="hover:text-primary">Кошик</a>
+        <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+        <span class="font-medium text-on-surface">Оформлення замовлення</span>
+      </nav>
+      <p class="flex items-center gap-2 text-body-sm text-emerald-600">
+        <span class="material-symbols-outlined text-[16px]">verified</span>
+        Дані захищено 256-бітним SSL-протоколом
+      </p>
+    </div>
+
+    <p class="mb-space-xs text-caption font-bold uppercase tracking-wide text-blue-600">Безпечний розрахунок</p>
+    <h1 class="mb-space-lg text-display-hero-mobile tracking-tight lg:text-display-hero">Оформлення замовлення</h1>
+
+    <form id="checkout-form" class="grid items-start gap-space-xl lg:grid-cols-[1fr_380px]">
+      <!-- ============ ЛІВА КОЛОНКА ============ -->
+      <div class="flex min-w-0 flex-col gap-space-xl">
+        <!-- 1. Контактні дані -->
+        <section class="card border-l-4 border-blue-600 p-space-md">
+          <h2 class="mb-space-md flex items-center gap-space-sm text-headline-md">
+            <span class="grid h-7 w-7 place-items-center rounded-md bg-blue-600 text-body-sm font-bold text-white">1</span>
+            Контактні дані покупця
+            <span class="material-symbols-outlined ml-auto text-[20px] text-emerald-600">check_circle</span>
+          </h2>
+          <p class="mb-space-md text-caption text-outline">Авторизація через кабінет «Олексій М.»</p>
+
+          <div class="grid gap-space-md sm:grid-cols-2">
+            <label class="flex flex-col gap-1 text-body-sm font-semibold">
+              Ім'я та Прізвище *
+              <input type="text" name="name" required value="Олексій Мельник" class="input py-2.5 text-body-md" autocomplete="name" />
+            </label>
+            <label class="flex flex-col gap-1 text-body-sm font-semibold">
+              Номер телефону *
+              <input type="tel" name="phone" required pattern="\+380[0-9 ]{9,}" value="+380 67 123 45 67" class="input py-2.5 text-body-md" autocomplete="tel" />
+            </label>
+            <label class="flex flex-col gap-1 text-body-sm font-semibold sm:col-span-2">
+              Електронна пошта *
+              <input type="email" name="email" required value="oleksiy.melnyk@gmail.com" class="input py-2.5 text-body-md" autocomplete="email" />
+            </label>
+          </div>
+
+          <label class="mt-space-md flex cursor-pointer items-center gap-2 text-body-sm text-on-surface-variant">
+            <input type="checkbox" name="otherRecipient" class="h-4.5 w-4.5 accent-blue-600" />
+            Отримувачем замовлення буде інша особа
+          </label>
+          <p class="mt-space-xs text-caption text-outline">Паспортні дані зарезервуються автоматично.</p>
+        </section>
+
+        <!-- 2. Доставка -->
+        <section class="card border-l-4 border-blue-600 p-space-md">
+          <h2 class="mb-space-md flex items-center gap-space-sm text-headline-md">
+            <span class="grid h-7 w-7 place-items-center rounded-md bg-blue-600 text-body-sm font-bold text-white">2</span>
+            Спосіб доставки
+            <span class="ml-auto rounded-full bg-emerald-100 px-space-sm py-1 text-caption font-bold text-emerald-700">Безкоштовно до 2 000 ₴</span>
+          </h2>
+          <p class="mb-space-md text-caption text-outline">Оберіть зручний спосіб доставки або пункт видачі</p>
+
+          <div class="grid gap-space-sm sm:grid-cols-2">
+            {deliveryOptions.map(([id, title, note, price, checked]) => (
+              <label
+                class:list={[
+                  'flex cursor-pointer flex-col gap-1 rounded-lg border p-space-sm transition',
+                  checked ? 'border-blue-600 bg-blue-50/60' : 'border-outline-variant bg-white hover:border-blue-300',
+                ]}
+              >
+                <span class="flex items-center gap-2">
+                  <input type="radio" name="delivery" value={title} checked={checked} class="accent-blue-600" data-delivery-option />
+                  <b class="text-body-md">{title}</b>
+                  <b class="ml-auto whitespace-nowrap text-body-sm text-on-surface">{price}</b>
+                </span>
+                <span class="pl-6 text-body-sm text-on-surface-variant">{note}</span>
+              </label>
+            ))}
+          </div>
+
+          <div class="mt-space-md rounded-lg bg-surface-container-low p-space-md">
+            <p class="mb-space-sm flex items-center justify-between text-body-md font-semibold">
+              <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-600">location_on</span> Адреса отримання</span>
+              <span class="flex items-center gap-1 text-body-sm font-normal text-emerald-600">
+                <span class="material-symbols-outlined text-[16px]">schedule</span> Орієнтовно завтра, 14:00
+              </span>
+            </p>
+            <div class="grid gap-space-sm sm:grid-cols-2">
+              <label class="flex flex-col gap-1 text-body-sm">
+                Населений пункт
+                <select name="city" class="input py-2.5 text-body-md">
+                  {cities.map((c) => <option selected={c === 'Київ'}>{c}</option>)}
+                </select>
+              </label>
+              <label class="flex flex-col gap-1 text-body-sm">
+                Відділення або поштомат
+                <input type="text" name="branch" value="Відділення №45 (до 30 кг): вул. Велика Васильківська, 72" class="input py-2.5 text-body-md" />
+              </label>
+            </div>
+            <p class="mt-space-sm flex items-start gap-2 rounded-md bg-blue-50 px-space-sm py-2 text-body-sm text-blue-800">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              Безкоштовне зберігання у відділенні Нової пошти до 7 календарних днів.
+            </p>
+          </div>
+        </section>
+
+        <!-- 3. Оплата -->
+        <section class="card border-l-4 border-blue-600 p-space-md">
+          <h2 class="mb-space-md flex items-center gap-space-sm text-headline-md">
+            <span class="grid h-7 w-7 place-items-center rounded-md bg-blue-600 text-body-sm font-bold text-white">3</span>
+            Спосіб оплати
+            <span class="ml-auto flex items-center gap-1 text-caption font-normal text-on-surface-variant">
+              <span class="material-symbols-outlined text-[16px]">lock</span> Безпечно
+            </span>
+          </h2>
+          <p class="mb-space-md text-caption text-outline">Швидка безпечна оплата або фірмове розтермінування 0%</p>
+
+          <div class="flex flex-col gap-space-sm">
+            {paymentOptions.map(([id, title, note, badge, checked]) => (
+              <label
+                class:list={[
+                  'flex cursor-pointer flex-col gap-1 rounded-lg border p-space-sm transition',
+                  checked ? 'border-blue-600 bg-blue-50/60' : 'border-outline-variant bg-white hover:border-blue-300',
+                ]}
+              >
+                <span class="flex items-center gap-2">
+                  <input type="radio" name="payment" value={title} checked={checked} class="accent-blue-600" data-payment-option />
+                  <b class="text-body-md">{title}</b>
+                  <b class="ml-auto whitespace-nowrap rounded-md bg-blue-50 px-space-sm py-0.5 text-caption font-bold text-blue-700">{badge}</b>
+                </span>
+                <span class="pl-6 text-body-sm text-on-surface-variant">{note}</span>
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <!-- 4. Побажання -->
+        <section class="card border-l-4 border-blue-600 p-space-md">
+          <h2 class="mb-space-md flex items-center gap-space-sm text-headline-md">
+            <span class="grid h-7 w-7 place-items-center rounded-md bg-blue-600 text-body-sm font-bold text-white">4</span>
+            Додаткові побажання
+          </h2>
+          <p class="mb-space-md text-caption text-outline">Вплиньте на комфорт комунікації під час обробки</p>
+
+          <label class="flex cursor-pointer items-start gap-2 text-body-md">
+            <input type="checkbox" name="noCall" checked class="mt-0.5 h-4.5 w-4.5 accent-blue-600" />
+            <span>
+              <b>Не перетелефоновувати мені для підтвердження</b><br/>
+              <span class="text-body-sm text-on-surface-variant">Ми надішлемо інформацію через SMS та Viber, якщо всі товари на складі.</span>
+            </span>
+          </label>
+
+          <label class="mt-space-md flex flex-col gap-1 text-body-sm">
+            Коментар до замовлення (необов'язково)
+            <textarea name="comment" rows="3" class="input py-2.5 text-body-md" placeholder="Наприклад: зателефонувати перед відправкою, або специфічний код домофона…"></textarea>
+          </label>
+
+          <div class="mt-space-md grid gap-space-sm sm:grid-cols-3">
+            {[
+              ['verified', '100% Оригінальна', 'Офіційна техніка'],
+              ['autorenew', 'Обмін / повернення', '14 днів за законом'],
+              ['support_agent', 'Підтримка 24/7', '0 800 300 000'],
+            ].map(([icon, t, s]) => (
+              <div class="flex items-center gap-2 rounded-lg bg-surface-container-low px-space-sm py-2">
+                <span class="material-symbols-outlined text-[20px] text-emerald-600">{icon}</span>
+                <div class="leading-tight">
+                  <p class="text-body-sm font-semibold">{t}</p>
+                  <p class="text-caption text-outline">{s}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ ПРАВА КОЛОНКА ============ -->
+      <aside class="flex flex-col gap-space-md lg:sticky lg:top-44">
+        <div class="card p-space-md">
+          <div class="mb-space-md flex items-center justify-between">
+            <h2 class="text-headline-md">Ваше замовлення</h2>
+            <span class="badge bg-blue-50 text-blue-700"><span data-cart-count>0</span>&nbsp;товарів</span>
+          </div>
+
+          <div class="mb-space-md flex flex-col gap-space-sm border-b border-outline-variant pb-space-md" data-summary-items>
+            <!-- рендерить cart.js сторінки -->
+          </div>
+
+          <div class="mb-space-md">
+            <p class="mb-space-xs text-caption font-bold uppercase tracking-wide text-outline">Промокод на знижку</p>
+            <form class="flex gap-space-xs" data-checkout-promo>
+              <input type="text" class="input py-2 text-body-sm uppercase" placeholder="TECHNO2026" data-checkout-promo-input />
+              <button type="submit" class="btn-outline px-space-sm text-body-sm">Застосувати</button>
+            </form>
+            <p class="mt-space-xs hidden text-body-sm font-semibold text-emerald-600" data-checkout-promo-ok>
+              Промокод «TECHNO2026» активовано (−500 ₴)
+            </p>
+          </div>
+
+          <dl class="flex flex-col gap-space-sm border-t border-outline-variant pt-space-md text-body-md">
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Вартість товарів</dt>
+              <dd class="tabular font-semibold" data-sum-subtotal>0 ₴</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Знижка за промокодом</dt>
+              <dd class="tabular font-semibold text-emerald-600" data-sum-promo>0 ₴</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Знижка магазину</dt>
+              <dd class="tabular font-semibold text-emerald-600" data-sum-store>0 ₴</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Доставка Новою Поштою</dt>
+              <dd class="font-semibold text-emerald-600">0 ₴</dd>
+            </div>
+          </dl>
+
+          <div class="mt-space-md flex items-baseline justify-between border-t border-outline-variant pt-space-md">
+            <span class="text-body-md font-bold">Разом:</span>
+            <span class="tabular text-price-display-lg text-blue-700" data-sum-total>0 ₴</span>
+          </div>
+          <p class="mt-1 text-right text-caption text-outline">з урахуванням ПДВ 20%</p>
+
+          <button type="submit" class="btn-primary mt-space-md flex w-full items-center justify-center gap-2 py-3.5 text-headline-sm">
+            <span class="material-symbols-outlined text-[20px]">lock</span>
+            Підтвердити замовлення
+          </button>
+          <p class="mt-space-xs text-center text-caption text-outline">
+            Натискаючи кнопку, ви погоджуєтесь з умовами публічної оферти та обробкою персональних даних
+          </p>
+
+          <div class="mt-space-md rounded-lg bg-emerald-50 p-space-sm text-body-sm text-emerald-800">
+            <p class="flex items-center gap-2 font-semibold">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+              Сертифікований платіжний шлюз
+            </p>
+            <p class="mt-1 text-emerald-700">
+              Безпечна оплата з протоколом PCI DSS Level 1, 3D Secure 2.0 та офіційна гарантія виробника 12 місяців.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </form>
+  </div>
+
+  <script>
+    import { cart, totals, formatPrice, getPromo, setPromo, PROMO_CODE, showToast } from '../scripts/cart.js';
+
+    const itemsHost = document.querySelector('[data-summary-items]');
+    const fmt = formatPrice;
+
+    function renderSummary() {
+      const items = cart.items();
+      const t = totals();
+
+      if (itemsHost) {
+        itemsHost.innerHTML = items.length
+          ? items
+              .map(
+                (i) => `
+          <div class="flex items-center gap-space-sm">
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-[#f8fafc] text-xl">${i.emoji}</span>
+            <span class="min-w-0 flex-1">
+              <span class="line-clamp-1 text-body-sm font-semibold">${i.title}</span>
+              <span class="text-caption text-outline">${i.qty} шт.</span>
+            </span>
+            <span class="tabular whitespace-nowrap text-body-sm font-bold">${fmt(i.price * i.qty)}</span>
+          </div>`,
+              )
+              .join('')
+          : '<p class="text-body-sm text-on-surface-variant">Кошик порожній — додайте товари.</p>';
+      }
+
+      const set = (sel, val) => {
+        const el = document.querySelector(sel);
+        if (el) el.textContent = val;
+      };
+      set('[data-sum-subtotal]', fmt(t.subtotal));
+      set('[data-sum-store]', `-${fmt(t.storeDiscount)}`);
+      set('[data-sum-promo]', `-${fmt(t.promo)}`);
+      set('[data-sum-total]', fmt(t.total));
+      document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(t.count)));
+
+      const promoOk = document.querySelector('[data-checkout-promo-ok]');
+      promoOk?.classList.toggle('hidden', !getPromo());
+    }
+
+    document.querySelector('[data-checkout-promo]')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.querySelector('[data-checkout-promo-input]');
+      const value = input instanceof HTMLInputElement ? input.value.trim().toUpperCase() : '';
+      if (value === PROMO_CODE) {
+        setPromo(true);
+        showToast('Промокод застосовано: -500 ₴');
+      } else {
+        showToast('Такого промокоду не існує');
+      }
+      renderSummary();
+    });
+
+    const form = document.getElementById('checkout-form');
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (cart.count() === 0) {
+        showToast('Кошик порожній');
+        window.location.href = '/cart';
+        return;
+      }
+
+      const data = new FormData(form as HTMLFormElement);
+      const t = totals();
+      const order = {
+        number: `ТП-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+        total: t.total,
+        count: t.count,
+        name: String(data.get('name') ?? ''),
+        phone: String(data.get('phone') ?? ''),
+        city: String(data.get('city') ?? 'Київ'),
+        delivery: String(data.get('delivery') ?? 'Нова пошта'),
+        payment: String(data.get('payment') ?? ''),
+        createdAt: new Date().toISOString(),
+      };
+      sessionStorage.setItem('tp_last_order', JSON.stringify(order));
+      cart.clear();
+      setPromo(false);
+      window.location.href = '/success';
+    });
+
+    document.addEventListener('tp:cart-change', renderSummary);
+    renderSummary();
+  </script>
+</BaseLayout>

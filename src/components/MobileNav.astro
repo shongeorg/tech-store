@@ -1,0 +1,31 @@
+---
+const path = Astro.url.pathname;
+const items = [
+  { href: '/', icon: 'home', label: 'Головна' },
+  { href: '/catalog', icon: 'grid_view', label: 'Каталог' },
+  { href: '#', icon: 'favorite', label: 'Обране' },
+  { href: '/cart', icon: 'shopping_bag', label: 'Кошик', cart: true },
+  { href: '/profile', icon: 'person', label: 'Профіль' },
+];
+---
+<nav class="fixed inset-x-0 bottom-0 z-40 border-t border-outline-variant bg-surface-container-lowest lg:hidden" aria-label="Мобільна навігація">
+  <div class="grid grid-cols-5">
+    {items.map((it) => (
+      <a
+        href={it.href}
+        class:list={[
+          'relative flex flex-col items-center gap-0.5 py-2 text-[10px]',
+          it.href !== '#' && path === it.href ? 'text-blue-600' : 'text-on-surface-variant',
+        ]}
+      >
+        <span class="relative">
+          <span class="material-symbols-outlined text-[22px]">{it.icon}</span>
+          {it.cart && (
+            <span class="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-orange-500 px-1 text-[9px] font-bold text-white" data-cart-count>0</span>
+          )}
+        </span>
+        {it.cart ? <span class="text-[10px] font-bold" data-cart-sum>0 ₴</span> : <span>{it.label}</span>}
+      </a>
+    ))}
+  </div>
+</nav>

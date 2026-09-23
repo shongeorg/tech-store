@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const eta = new Date(Date.now() + 2 * 86400000).toLocaleDateString('uk-UA', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+});
+---
+<BaseLayout
+  title="Замовлення оформлено — ТЕХНОПРОСТІР"
+  description="Дякуємо за замовлення! Деталі підтвердження, спосіб доставки та оплати."
+>
+  <div class="shell flex justify-center py-space-2xl">
+    <div class="w-full max-w-2xl">
+      <div class="card p-space-xl text-center">
+        <span class="mx-auto mb-space-md grid h-16 w-16 place-items-center rounded-full bg-emerald-100">
+          <span class="material-symbols-outlined text-4xl text-emerald-600">check_circle</span>
+        </span>
+        <h1 class="text-headline-xl tracking-tight">Замовлення оформлено</h1>
+        <p class="mt-space-sm text-body-md text-on-surface-variant">
+          Дякуємо за покупку! Ми надіслали підтвердження на вашу пошту та SMS-повідомлення.
+        </p>
+
+        <dl class="mt-space-lg flex flex-col gap-space-sm rounded-lg bg-surface-container-low p-space-md text-left text-body-md">
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Номер замовлення</dt>
+            <dd class="tabular font-bold text-blue-700" data-order-number>—</dd>
+          </div>
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Сума</dt>
+            <dd class="tabular font-bold" data-order-total>—</dd>
+          </div>
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Отримувач</dt>
+            <dd class="font-semibold" data-order-name>—</dd>
+          </div>
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Спосіб доставки</dt>
+            <dd class="text-right font-semibold" data-order-delivery>Нова пошта, відділення №45, Київ</dd>
+          </div>
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Спосіб оплати</dt>
+            <dd class="text-right font-semibold" data-order-payment>Оплата карткою онлайн</dd>
+          </div>
+          <div class="flex items-center justify-between gap-space-sm">
+            <dt class="text-on-surface-variant">Орієнтовна дата доставки</dt>
+            <dd class="tabular font-semibold text-emerald-600">{eta}</dd>
+          </div>
+        </dl>
+
+        <div class="mt-space-lg flex flex-col gap-space-sm sm:flex-row">
+          <a href="/profile" class="btn-outline flex-1 py-3 text-body-md font-semibold">Мої замовлення</a>
+          <a href="/catalog" class="btn-primary flex-1 py-3 text-body-md">Продовжити покупки</a>
+        </div>
+
+        <p class="mt-space-md text-body-sm text-on-surface-variant">
+          Служба турботи ТЕХНОПРОСТІР: <b>0 800 300 777</b> (щодня 08:00–21:00, безкоштовно по Україні)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { formatPrice } from '../scripts/cart.js';
+
+    const raw = sessionStorage.getItem('tp_last_order');
+    const order = raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
+
+    const set = (sel: string, val: string) => {
+      const el = document.querySelector(sel);
+      if (el) el.textContent = val;
+    };
+
+    if (order) {
+      set('[data-order-number]', String(order.number ?? '—'));
+      set('[data-order-total]', formatPrice(Number(order.total ?? 0)));
+      set('[data-order-name]', String(order.name ?? '—'));
+      set('[data-order-delivery]', `${String(order.delivery ?? 'Нова пошта')}, ${String(order.city ?? 'Київ')}`);
+      set('[data-order-payment]', String(order.payment ?? 'Оплата карткою онлайн'));
+    }
+  </script>
+</BaseLayout>

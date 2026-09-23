@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+<html lang="uk"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Технопростір</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#002109", "on-error": "#ffffff", "tertiary": "#006329", "surface-bright": "#f8f9ff", "outline": "#737686", "surface-dim": "#cbdbf5", "primary-fixed": "#dbe1ff", "surface": "#f8f9ff", "on-secondary-container": "#571a00", "on-background": "#0b1c30", "on-tertiary": "#ffffff", "on-primary": "#ffffff", "secondary-container": "#fd651e", "surface-variant": "#d3e4fe", "tertiary-fixed": "#7ffc97", "primary": "#004ac6", "on-secondary-fixed": "#370e00", "on-tertiary-container": "#c7ffca", "surface-tint": "#0053db", "surface-container-high": "#dce9ff", "surface-container": "#e5eeff", "on-primary-container": "#eeefff", "secondary-fixed-dim": "#ffb599", "surface-container-highest": "#d3e4fe", "on-tertiary-fixed-variant": "#005320", "background": "#f8f9ff", "on-error-container": "#93000a", "on-primary-fixed": "#00174b", "outline-variant": "#c3c6d7", "inverse-on-surface": "#eaf1ff", "on-primary-fixed-variant": "#003ea8", "primary-container": "#2563eb", "secondary-fixed": "#ffdbce", "secondary": "#a73a00", "primary-fixed-dim": "#b4c5ff", "tertiary-fixed-dim": "#62df7d", "on-secondary": "#ffffff", "error": "#ba1a1a", "on-secondary-fixed-variant": "#7f2b00", "surface-container-low": "#eff4ff", "on-surface": "#0b1c30", "inverse-surface": "#213145", "tertiary-container": "#007f36", "surface-container-lowest": "#ffffff", "on-surface-variant": "#434655", "inverse-primary": "#b4c5ff", "error-container": "#ffdad6" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "1.5rem", "space-md": "0.75rem", "margin-mobile": "0.75rem", "space-xl": "1.5rem", "gutter": "1rem", "space-2xs": "0.125rem", "space-lg": "1rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-2xl": "2rem", "gutter-mobile": "0.5rem" }, "fontFamily": { "headline-xl": ["Inter"], "body-md": ["Inter"], "specs-mono": ["Inter"], "headline-sm": ["Inter"], "display-hero": ["Inter"], "headline-lg": ["Inter"], "body-sm": ["Inter"], "headline-md": ["Inter"], "price-display-sm": ["Inter"], "price-display-md": ["Inter"], "caption": ["Inter"], "price-display-lg": ["Inter"], "display-hero-mobile": ["Inter"], "label-caps": ["Inter"] }, "fontSize": { "headline-xl": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "specs-mono": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }], "display-hero": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-lg": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-md": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "600" }], "price-display-sm": ["14px", { "lineHeight": "18px", "fontWeight": "700" }], "price-display-md": ["18px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "caption": ["11px", { "lineHeight": "14px", "fontWeight": "400" }], "price-display-lg": ["24px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "display-hero-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.06)]"><div class="bg-surface-container-low border-b border-outline-variant/30 hidden lg:block"><div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-9"><div class="flex items-center gap-space-lg font-caption text-caption text-on-surface-variant"><div class="flex items-center gap-space-2xs cursor-pointer hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px] text-primary">location_on</span><span class="font-medium text-on-surface">Київ</span><span class="material-symbols-outlined text-[14px]">expand_more</span></div><div class="flex items-center gap-space-2xs cursor-pointer hover:text-primary transition-colors"><span class="material-symbols-outlined text-[16px]">store</span><span>Магазини та точки видачі (48)</span></div></div><div class="flex items-center gap-space-lg font-caption text-caption text-on-surface-variant"><nav class="flex items-center gap-space-md" data-active-classes="text-primary font-bold"><a class="hover:text-primary transition-colors" data-path="dostavka" href="#">Доставка</a><a class="hover:text-primary transition-colors" data-path="oplata" href="#">Оплата</a><a class="hover:text-primary transition-colors" data-path="harantiya" href="#">Гарантія та повернення</a><a class="hover:text-primary transition-colors" data-path="kredyt" href="#">Кредит і розстрочка 0%</a><a class="hover:text-primary transition-colors" data-path="kontakty" href="#">Контакти</a><a class="hover:text-primary transition-colors" data-path="b2b" href="#">Корпоративним клієнтам (B2B)</a></nav><div class="h-3 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-xs font-specs-mono text-specs-mono"><span class="material-symbols-outlined text-[15px] text-tertiary">call</span><span class="font-bold text-on-surface">0 800 300 777</span><span class="text-[10px] text-on-surface-variant">(08:00 - 21:00)</span></div><div class="h-3 w-px bg-outline-variant/40"></div><div class="flex items-center gap-space-2xs font-bold text-caption cursor-pointer"><span class="text-primary">UA</span><span class="text-outline-variant">|</span><span class="text-on-surface-variant hover:text-on-surface transition-colors">EN</span></div></div></div></div><div class="max-w-7xl mx-auto px-margin py-space-sm flex items-center justify-between gap-space-lg"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm flex-shrink-0 group" data-path="home" href="#"><div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary font-headline-lg text-headline-lg shadow-sm">Т</div><div class="flex flex-col"><span class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface leading-tight group-hover:text-primary transition-colors">ТЕХНОПРОСТІР</span><span class="font-caption text-caption text-on-surface-variant uppercase tracking-wider font-semibold text-[10px]">Омніканальний ритейл</span></div></a><button class="hidden md:flex items-center gap-space-xs bg-primary-container text-on-primary px-space-lg py-2.5 rounded-lg font-headline-sm text-headline-sm hover:bg-primary transition-colors shadow-sm"><span class="material-symbols-outlined text-[20px]">menu</span><span>Каталог товарів</span></button></div><div class="flex-1 max-w-2xl mx-space-sm hidden sm:block"><div class="relative flex items-center border border-outline-variant rounded-lg bg-surface-container-low focus-within:border-primary focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary/20 transition-all"><div class="flex items-center pl-space-md pr-space-xs text-on-surface-variant border-r border-outline-variant/40 font-body-sm text-body-sm cursor-pointer hover:text-on-surface"><span>Всі категорії</span><span class="material-symbols-outlined text-[16px] ml-space-2xs">expand_more</span></div><input class="w-full bg-transparent px-space-md py-2 text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none" placeholder="Пошук серед 150 000+ товарів: наприклад, iPhone 16 Pro або OLED телевізор..." type="text"/><button class="bg-primary text-on-primary h-10 px-space-lg rounded-r-lg flex items-center justify-center hover:bg-primary-container transition-colors flex-shrink-0"><span class="material-symbols-outlined text-[22px]">search</span></button></div></div><div class="flex items-center gap-space-md flex-shrink-0"><a class="flex flex-col items-center justify-center relative p-space-xs text-on-surface-variant hover:text-primary transition-colors" data-path="porivnyannya" href="#"><span class="material-symbols-outlined text-[24px]">balance</span><span class="absolute 0 right-0 w-4 h-4 bg-surface-container-highest text-primary font-caption text-[10px] font-bold rounded-full flex items-center justify-center border border-surface-container-lowest">2</span><span class="font-caption text-[11px] hidden xl:block mt-0.5">Порівняння</span></a><a class="flex flex-col items-center justify-center relative p-space-xs text-on-surface-variant hover:text-primary transition-colors" data-path="obrano" href="#"><span class="material-symbols-outlined text-[24px]">favorite</span><span class="absolute 0 right-0 w-4 h-4 bg-secondary-container text-on-primary font-caption text-[10px] font-bold rounded-full flex items-center justify-center">5</span><span class="font-caption text-[11px] hidden xl:block mt-0.5">Обране</span></a><a class="flex items-center gap-space-xs p-space-xs rounded-lg hover:bg-surface-container-low transition-colors" data-path="koshik" href="#"><div class="relative flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[26px]">shopping_cart</span><span class="absolute -top-1 -right-1.5 w-4 h-4 bg-primary text-on-primary font-caption text-[10px] font-bold rounded-full flex items-center justify-center">3</span></div><div class="hidden md:flex flex-col text-left leading-tight pl-1"><span class="font-caption text-caption text-on-surface-variant">Кошик</span><span class="font-price-display-sm text-price-display-sm font-bold text-primary">49 998 ₴</span></div></a><div class="h-8 w-px bg-outline-variant/50 hidden md:block"></div><div class="flex items-center gap-space-xs pl-space-2xs cursor-pointer group"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container-highest" src="https://lh3.googleusercontent.com/aida/AEtjO1U0YvkfQBavM4s1xcxI-bq6cZ-i0n-INeF6fnFQuhf5LczNCdx74k7d8Fh7-FxTT1pOsgOM86Ync7Hm1wQ_rDKy_feNjklALI9wP1tP2dvhS9b1aVBMSpSWx7Kf8lATK4mECd7TeHeug7srZGk4bjHThFZO017TQD6hSJQeqLB7zR5ZMaAwOZZ_kN-nQX_jTsujSpE3241Zo9beEh16gaWJLQS5zk70iD4HccDf0-lsFEtiHIFoUfiud-hA"/><div class="hidden lg:flex flex-col text-left"><span class="font-caption text-caption text-on-surface-variant leading-none">Особистий кабінет</span><span class="font-body-sm text-body-sm font-semibold text-on-surface flex items-center gap-0.5 leading-tight">Олексій М.<span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span></span></div></div></div></div><div class="border-t border-outline-variant/30 bg-surface-container-lowest hidden lg:block"><div class="max-w-7xl mx-auto px-margin"><nav class="flex items-center justify-between gap-space-xs overflow-x-auto py-2 font-body-sm text-body-sm" data-active-classes="text-primary font-bold border-b-2 border-primary"><a class="flex items-center gap-1 font-bold text-secondary hover:text-secondary/80 flex-shrink-0 bg-secondary-fixed/50 px-2.5 py-1 rounded" data-path="garyachi-znyzhky" href="#">Гарячі Знижки %</a><a aria-current="page" class="whitespace-nowrap transition-colors py-1 text-primary font-bold border-b-2 border-primary" data-path="smartfony-ta-hadzhety" href="#">Смартфони та гаджети</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="noutbuky-ta-pk" href="#">Ноутбуки та ПК</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="televizory-ta-audio" href="#">Телевізори та аудіо</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="pobutova-tekhnika" href="#">Побутова техніка</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="komplektuyuchi" href="#">Комплектуючі</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="heyming" href="#">Геймінг</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="elektrozhyvlennya-ecoflow" href="#">Електроживлення та EcoFlow</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="khity-prodazhiv" href="#">Хіти продажів</a><a class="text-on-surface-variant hover:text-primary whitespace-nowrap transition-colors py-1" data-path="trade-in" href="#">Trade-In обмін</a></nav></div></div></header><main class="w-full pt-[148px] lg:pt-[148px] bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- Dynamic Catalog Canvas -->
+<div class="max-w-7xl mx-auto px-margin w-full pb-space-2xl">
+<!-- Micro Breadcrumb System -->
+<nav aria-label="Хлібні крихти" class="py-space-md flex items-center gap-space-xs text-on-surface-variant font-caption text-caption overflow-x-auto whitespace-nowrap">
+<a class="hover:text-primary transition-colors flex items-center gap-0.5" data-path="home" href="#">
+<span class="material-symbols-outlined text-[14px]">home</span>
+<span>Головна</span>
+</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<a class="hover:text-primary transition-colors" data-path="katalog" href="#">Каталог товарів</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<a class="hover:text-primary transition-colors" data-path="smartfony-ta-hadzhety" href="#">Смартфони та гаджети</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="text-on-surface font-semibold">Смартфони</span>
+</nav>
+<!-- Category Header Meta Surface -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg mb-space-lg shadow-sm">
+<div class="flex flex-col md:flex-row md:items-baseline justify-between gap-space-sm mb-space-xs">
+<div class="flex items-baseline gap-space-sm">
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Смартфони в Україні</h1>
+<span class="font-specs-mono text-specs-mono text-on-surface-variant font-semibold">1 420 товарів</span>
+</div>
+<div class="flex items-center gap-space-md font-specs-mono text-specs-mono text-on-surface-variant">
+<span class="inline-flex items-center gap-1 text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+            Склад у Києві: 94% наявності
+          </span>
+<span class="hidden sm:inline text-outline-variant">•</span>
+<span class="hidden sm:inline">Оновлено: сьогодні о 09:30</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-4xl leading-relaxed">
+        Офіційні смартфони провідних світових брендів з офіційною гарантією від 12 до 24 місяців, можливістю покупки в розстрочку 0% та швидкою доставкою Новою поштою або безкоштовним самовивозом у день замовлення з 48 магазинів мережі «ТЕХНОПРОСТІР».
+      </p>
+<!-- Subcategory Interactive Pills Rail -->
+<div class="mt-space-md pt-space-md flex items-center gap-2 overflow-x-auto pb-1">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary font-headline-sm text-caption shadow-sm transition-all hover:bg-primary whitespace-nowrap">
+<span class="material-symbols-outlined text-[15px]">phone_iphone</span>
+<span>Apple iPhone</span>
+<span class="bg-on-primary/20 text-on-primary px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">412</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span>Samsung Galaxy</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">385</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span>Xiaomi та Redmi</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">290</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span>Google Pixel</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">145</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span class="material-symbols-outlined text-[15px] text-primary">5g</span>
+<span>Смартфони з 5G</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">890</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-fixed/50 text-on-secondary-fixed hover:bg-secondary-fixed transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span class="material-symbols-outlined text-[15px] text-secondary">bolt</span>
+<span>Флагмани 2026</span>
+<span class="bg-surface-container-lowest text-secondary px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">74</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-headline-sm text-caption whitespace-nowrap">
+<span class="material-symbols-outlined text-[15px]">security</span>
+<span>Захищені смартфони</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.5 rounded-full text-[10px] font-specs-mono">114</span>
+</button>
+</div>
+</div>
+<!-- Main Two-Column Architectural Workspace -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: Structured Faceted Rail (280px equivalent on 12-col grid) -->
+<aside class="lg:col-span-3 space-y-space-md">
+<!-- Active Filter Chips Board -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-headline-sm text-body-sm text-on-surface uppercase tracking-wide text-[11px]">Вибрані фільтри</span>
+<button class="font-caption text-caption text-secondary hover:underline cursor-pointer font-semibold" onclick="alert('Фільтри очищено')">
+              Очистити всі
+            </button>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface font-body-sm text-[12px] px-2.5 py-1 rounded-md">
+<span>Apple</span>
+<button class="hover:text-secondary text-outline"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface font-body-sm text-[12px] px-2.5 py-1 rounded-md">
+<span>256 ГБ</span>
+<button class="hover:text-secondary text-outline"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+<span class="inline-flex items-center gap-1 bg-surface-container-high text-on-surface font-body-sm text-[12px] px-2.5 py-1 rounded-md">
+<span>В наявності</span>
+<button class="hover:text-secondary text-outline"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</span>
+</div>
+</div>
+<!-- Facet Block: Price Controller -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Ціна, ₴</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">tune</span>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1">
+<div class="bg-surface-container-low rounded-lg p-2">
+<label class="block font-caption text-[10px] text-on-surface-variant font-medium">Від</label>
+<input class="w-full bg-transparent font-specs-mono text-specs-mono font-bold text-on-surface focus:outline-none" id="price-from" type="number" value="12000"/>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2">
+<label class="block font-caption text-[10px] text-on-surface-variant font-medium">До</label>
+<input class="w-full bg-transparent font-specs-mono text-specs-mono font-bold text-on-surface focus:outline-none" id="price-to" type="number" value="75000"/>
+</div>
+</div>
+<!-- Price Slider Visual Track -->
+<div class="py-2 px-1">
+<div class="relative w-full h-1.5 bg-surface-container-high rounded-full">
+<div class="absolute left-1/5 right-1/4 h-full bg-primary rounded-full"></div>
+<div class="absolute left-1/5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary shadow-sm border-2 border-surface-container-lowest cursor-pointer"></div>
+<div class="absolute right-1/4 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary shadow-sm border-2 border-surface-container-lowest cursor-pointer"></div>
+</div>
+</div>
+<button class="w-full py-2 bg-surface-container text-primary font-headline-sm text-caption rounded-lg hover:bg-primary hover:text-on-primary transition-all">
+            Застосувати
+          </button>
+</div>
+<!-- Facet Block: Availability -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-xs">
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">Наявність</span>
+<span class="material-symbols-outlined text-[18px] text-outline">expand_less</span>
+</div>
+<div class="space-y-1.5">
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Тільки в наявності</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">1 240</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Відправка сьогодні</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">820</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Передзамовлення</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">35</span>
+</label>
+</div>
+</div>
+<!-- Facet Block: Brand with quick text filter -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Бренд</span>
+<span class="material-symbols-outlined text-[18px] text-outline">expand_less</span>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-low rounded-lg px-2.5 py-1.5 pl-8 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none" placeholder="Швидкий пошук бренду..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-2 text-[16px] text-outline">search</span>
+</div>
+<div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+<label class="flex items-center justify-between p-1.5 rounded-lg bg-surface-container-low/50 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm font-semibold text-primary">Apple</span>
+</div>
+<span class="font-specs-mono text-caption text-primary font-bold">412</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Samsung</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">385</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Xiaomi</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">290</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Google</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">145</span>
+</label>
+<label class="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface-container-low cursor-pointer">
+<div class="flex items-center gap-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-0 accent-primary cursor-pointer" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">Motorola</span>
+</div>
+<span class="font-specs-mono text-caption text-on-surface-variant">88</span>
+</label>
+</div>
+</div>
+<!-- Facet Block: Internal Storage -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-xs">
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-sm text-headline-sm text-on-surface">Вбудована пам'ять</span>
+<span class="material-symbols-outlined text-[18px] text-outline">expand_less</span>
+</div>
+<div class="grid grid-cols-2 gap-1.5">
+<label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<span class="font-specs-mono text-caption font-semibold text-on-surface">128 ГБ</span>
+<span class="font-specs-mono text-[10px] text-on-surface-variant">320</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg bg-primary-fixed text-on-primary-fixed cursor-pointer transition-colors ring-1 ring-primary/20">
+<span class="font-specs-mono text-caption font-bold">256 ГБ</span>
+<span class="font-specs-mono text-[10px] font-bold">580</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<span class="font-specs-mono text-caption font-semibold text-on-surface">512 ГБ</span>
+<span class="font-specs-mono text-[10px] text-on-surface-variant">340</span>
+</label>
+<label class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container cursor-pointer transition-colors">
+<span class="font-specs-mono text-caption font-semibold text-on-surface">1 ТБ</span>
+<span class="font-specs-mono text-[10px] text-on-surface-variant">180</span>
+</label>
+</div>
+</div>
+<!-- Facet Block: Screen Diagonal & RAM Specs -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md">
+<!-- RAM -->
+<div>
+<span class="font-headline-sm text-caption text-on-surface uppercase tracking-wider block mb-2">Оперативна пам'ять (RAM)</span>
+<div class="flex flex-wrap gap-1.5">
+<button class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-specs-mono text-caption hover:bg-surface-container-high">8 ГБ (410)</button>
+<button class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-specs-mono text-caption hover:bg-surface-container-high">12 ГБ (290)</button>
+<button class="px-2.5 py-1 rounded bg-surface-container text-on-surface font-specs-mono text-caption hover:bg-surface-container-high">16 ГБ (110)</button>
+</div>
+</div>
+<!-- Display Refresh -->
+<div class="pt-space-xs">
+<span class="font-headline-sm text-caption text-on-surface uppercase tracking-wider block mb-2">Частота оновлення</span>
+<div class="space-y-1">
+<label class="flex items-center justify-between font-body-sm text-body-sm text-on-surface cursor-pointer p-1 rounded hover:bg-surface-container-low">
+<span class="flex items-center gap-2"><input class="rounded accent-primary" type="checkbox"/> 120 Гц (Smooth Display)</span>
+<span class="font-specs-mono text-caption text-on-surface-variant">760</span>
+</label>
+<label class="flex items-center justify-between font-body-sm text-body-sm text-on-surface cursor-pointer p-1 rounded hover:bg-surface-container-low">
+<span class="flex items-center gap-2"><input class="rounded accent-primary" type="checkbox"/> 144 Гц (Геймерські)</span>
+<span class="font-specs-mono text-caption text-on-surface-variant">120</span>
+</label>
+</div>
+</div>
+<!-- Color palette picker -->
+<div class="pt-space-xs">
+<span class="font-headline-sm text-caption text-on-surface uppercase tracking-wider block mb-2">Колір корпусу</span>
+<div class="flex items-center gap-2">
+<button class="w-6 h-6 rounded-full bg-slate-900 shadow-sm ring-2 ring-primary ring-offset-2" title="Чорний"></button>
+<button class="w-6 h-6 rounded-full bg-slate-300 shadow-sm hover:scale-110 transition-transform" title="Сріблястий"></button>
+<button class="w-6 h-6 rounded-full bg-stone-400 shadow-sm hover:scale-110 transition-transform" title="Титановий"></button>
+<button class="w-6 h-6 rounded-full bg-blue-700 shadow-sm hover:scale-110 transition-transform" title="Синій"></button>
+<button class="w-6 h-6 rounded-full bg-amber-200 shadow-sm hover:scale-110 transition-transform" title="Золотий"></button>
+</div>
+</div>
+</div>
+<!-- Trade-in Promo Mini-Banner in Sidebar -->
+<div class="bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl p-space-md shadow-md space-y-space-xs relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-24 h-24 rounded-full bg-on-primary/10 pointer-events-none"></div>
+<span class="bg-secondary-container text-on-primary font-specs-mono text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Вигода до 70%</span>
+<div class="font-headline-sm text-headline-sm font-bold leading-tight">Обміняй старий телефон на новий iPhone 16</div>
+<p class="font-body-sm text-[12px] text-on-primary/80">Оцінка онлайн за 2 хвилини або в будь-якому магазині «ТЕХНОПРОСТІР».</p>
+<a class="inline-flex items-center gap-1 font-headline-sm text-[12px] text-secondary-fixed underline hover:no-underline pt-1" data-path="trade-in" href="#">
+<span>Розрахувати вартість</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</aside>
+<!-- RIGHT COLUMN: Product Listing Area (9 cols on 12-col desktop grid) -->
+<main class="lg:col-span-9 space-y-space-md min-w-0">
+<!-- Controls Bar: Sort, View Switcher & Counter -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md flex-wrap">
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">Сортування:</span>
+<div class="relative inline-block">
+<select class="appearance-none bg-surface-container-low text-on-surface font-headline-sm text-body-sm py-1.5 pl-3 pr-8 rounded-lg cursor-pointer focus:outline-none focus:bg-surface-container-high transition-colors" id="catalog-sort">
+<option selected="">За популярністю</option>
+<option>Від дешевих до дорогих</option>
+<option>Від дорогих до дешевих</option>
+<option>За рейтингом</option>
+<option>За розміром знижки</option>
+<option>Новинки</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 text-[16px] pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<span class="text-outline-variant hidden sm:inline">|</span>
+<span class="font-specs-mono text-specs-mono text-on-surface-variant">
+              Показано <strong class="text-on-surface font-bold">1–12</strong> з 1 420
+            </span>
+</div>
+<!-- View Style Selector & Fast Switchers -->
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<div class="bg-surface-container-low p-1 rounded-lg flex items-center gap-1">
+<button class="p-1.5 rounded bg-surface-container-lowest text-primary shadow-xs" title="Сітка 3x">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+</button>
+<button class="p-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors" title="Список">
+<span class="material-symbols-outlined text-[18px]">view_list</span>
+</button>
+</div>
+</div>
+</div>
+<!-- PRODUCT GRID: High-density 3-up Retail Showcase -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-space-md">
+<!-- Product Card 1: iPhone 16 Pro (Natural Titanium) -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<!-- Badges & Action Toolbar -->
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<div class="flex flex-col gap-1">
+<span class="bg-secondary-container text-on-primary font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                    ТОП ПРОДАЖІВ
+                  </span>
+<span class="bg-error text-on-error font-specs-mono text-[10px] font-bold px-1.5 py-0.5 rounded w-max">
+                    −6%
+                  </span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors" title="Порівняти">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors" title="В обране">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<!-- Product Visual Image Frame -->
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Apple iPhone 16 Pro Natural Titanium studio hardware photograph on minimalist light-gray tech backdrop, titanium reflective textured edge, surgical studio lighting, three distinct pro camera lenses visible, sharp crisp product focus, 8k resolution retail catalog render" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvZAiIjvHhgpSNBvFYp2mOY9ToTiy8HFF-GhMPEUBqe4PJd1v_vNyd5C4hlORtDakvhJ3WA4swY_Mw9bE_kRwHDFSHmHRHNHpdxtnZKyY7xtfrh2C-4vQsOZ-UeTiXnjpDm87zd7uZshhNekJWKSpZ88V8XO7s2MyIJ8dLa2Vgd9SlC35CLI55TXfOoZL80jr_PIsKn-TVtqDzv9kDHw7yBjklW-acvgHYauL1kBD0Ke_TP3f_0T3Xcg"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 781902
+                </span>
+</div>
+<!-- Rating and Review Cluster -->
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">4.9</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">94 відгуки</a>
+<span class="ml-auto font-specs-mono text-[10px] text-tertiary font-bold bg-tertiary-fixed/30 px-1.5 py-0.5 rounded">0-0-15</span>
+</div>
+<!-- Title & Key Subtitle -->
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Apple iPhone 16 Pro 256GB Natural Titanium (Офіційна гарантія 12 міс.)
+              </h3>
+<!-- Technical Specifications Snapshot Grid -->
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.3" Super Retina XDR (120Hz)</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Процесор:</span>
+<span class="font-semibold text-on-surface">Apple A18 Pro Bionic</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Камера:</span>
+<span class="font-semibold text-on-surface">48 + 48 + 12 Мп</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Зв'язок:</span>
+<span class="font-semibold text-on-surface">5G / eSIM + nanoSIM</span>
+</div>
+</div>
+</div>
+<!-- Pricing & Dispatch Engine -->
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  54 999 ₴
+                </span>
+<span class="font-specs-mono text-caption line-through text-outline">
+                  58 499 ₴
+                </span>
+</div>
+<!-- Logistics dispatch row -->
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>В наявності. Доставка завтра в Київ, Львів, Одесу</span>
+</div>
+<!-- Cart Actions -->
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all" title="Швидка покупка в 1 клік">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+<!-- Product Card 2: Apple iPhone 16 128GB Black -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<span class="bg-secondary text-on-secondary font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                  АКЦІЯ
+                </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Apple iPhone 16 in deep satin black matte finish, dual diagonal rear camera layout, sleek aluminum chassis, neutral tech photo studio studio lighting, professional clean product rendering, high fidelity electronics catalog view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgrpVRfIwIcgghXgbInMH9EqpcaCjpttaJxb8HqlBIzHZXnPCbs3os_ql0bgQwwy6e1m-8riYE5BZ1HSKZZ9dYiukGqUoMmHCUZdiTvfETIl5Oc8ir8dW8UJH0o0JON6YVZAGtDOtgLM07YAmZhGMHidYAWHAgL9Ip6HhkMA4gJO5skLjPMnCHx1CAwwS2lflOqAOKMs9gO_uc53BdPcPfwkpcEKq_E5zsDI3Y40EoxcGrcYyvqpwbkA"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 781844
+                </span>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">4.8</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">58 відгуків</a>
+<span class="ml-auto font-specs-mono text-[10px] text-primary font-bold bg-primary-fixed/40 px-1.5 py-0.5 rounded">0-0-12</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Apple iPhone 16 128GB Black (Офіційна гарантія 12 міс.)
+              </h3>
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.1" OLED Super Retina</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Процесор:</span>
+<span class="font-semibold text-on-surface">Apple A18 Chip</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Камера:</span>
+<span class="font-semibold text-on-surface">48 + 12 Мп з Fusion AI</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Фічі:</span>
+<span class="font-semibold text-on-surface">Action Button, 5G, USB-C</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  39 999 ₴
+                </span>
+<span class="font-specs-mono text-caption line-through text-outline">
+                  42 999 ₴
+                </span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">store</span>
+<span>Самовивіз сьогодні з 12 магазинів Києва</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+<!-- Product Card 3: Samsung Galaxy S25+ 256GB Titanium Silver -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<span class="bg-primary text-on-primary font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                  НОВИНКА
+                </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Samsung Galaxy S25 Plus in Titanium Silver finish, elegant triple vertical floating camera lenses, ultra slim symmetric bezels, dynamic amoled display render on white clean commercial background, precision premium tech styling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq36_934su4trg-hSCmQiVPirlt-t0n1-pHyeHc-Q1UoQnvzTw9-yvfAp3WArHU8C42ggDynhMIve4ZcJ0M03dA6cFWvrOH7EK994_R35JYwjqN0NGiOf-fw5yFwceeqEwwC96Po-X_4f98YcuqrkIPKoeBW_aGg7Tdd8iNvwQlW2nDO-e-543bCSW4Krx4nP_FnAr0ouChl2NAS2ag7s_r6hFd5cKakHO_SJJO-QSwLQM3VIyaecs7A"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 902143
+                </span>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">5.0</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">19 відгуків</a>
+<span class="ml-auto font-specs-mono text-[10px] text-tertiary font-bold bg-tertiary-fixed/30 px-1.5 py-0.5 rounded">0-0-24</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Samsung Galaxy S25+ 256GB Titanium Silver (Гарантія 24 міс.)
+              </h3>
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.7" Dynamic AMOLED 2X 120Hz</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Процесор:</span>
+<span class="font-semibold text-on-surface">Snapdragon 8 Elite (3 нм)</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Пам'ять / АКБ:</span>
+<span class="font-semibold text-on-surface">12GB RAM / 4900 мАг</span>
+</div>
+<div class="flex items-center justify-between">
+<span>ШІ-можливості:</span>
+<span class="font-semibold text-on-surface">Galaxy AI 2026 suite</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  46 999 ₴
+                </span>
+<span class="font-specs-mono text-caption text-tertiary font-semibold">
+                  + 1 400 ₴ кешбек
+                </span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">local_shipping</span>
+<span>Нова Пошта: безкоштовно у відділення</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+<!-- Product Card 4: Google Pixel 9 Pro 256GB Obsidian -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<span class="bg-secondary-container text-on-primary font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                  ХІТ
+                </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Google Pixel 9 Pro in deep glossy Obsidian black, iconic horizontal camera visor bar on back, polished metal frame, studio photo highlighting pristine flat screen and Google design language, soft shadow background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqWx05_l97347ibtOrJTe6lfcvlk9IAYVcQTzLvTvg-RLSd6JnOLQx1dsXjGuCYERkR-UAJ-tO0qc-vtmCNB30UoxFx8gImTBlKr0JbSNIzN_CFq2TK-uyTSdcD9izZpTvLECpkhqyoDw4Gjhv0WoU6ILD5CK2uMLKyOCm-fSJnbUEASsircsVVcs4vGMwikTf1CUoYNnXdPbx-anY69t1wA2H5Wl2yv6Svx1aZsyTd1Y_3C0vUMGz8w"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 651120
+                </span>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">4.9</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">42 відгуки</a>
+<span class="ml-auto font-specs-mono text-[10px] text-tertiary font-bold bg-tertiary-fixed/30 px-1.5 py-0.5 rounded">0-0-10</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Google Pixel 9 Pro 256GB Obsidian (Офіційна гарантія 12 міс.)
+              </h3>
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.3" LTPO OLED 1-120Hz</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Чипсет:</span>
+<span class="font-semibold text-on-surface">Google Tensor G4 + Titan M2</span>
+</div>
+<div class="flex items-center justify-between">
+<span>RAM / Накопичувач:</span>
+<span class="font-semibold text-on-surface">16GB / 256GB UFS 4.0</span>
+</div>
+<div class="flex items-center justify-between">
+<span>AI Фічі:</span>
+<span class="font-semibold text-on-surface">Magic Editor, Gemini Nano</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  41 499 ₴
+                </span>
+<span class="font-specs-mono text-caption line-through text-outline">
+                  44 999 ₴
+                </span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>В наявності. Відправка сьогодні</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+<!-- Product Card 5: Xiaomi 14 Ultra 16/512GB Black -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<span class="bg-primary text-on-primary font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                  КРАЩА КАМЕРА
+                </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Xiaomi 14 Ultra smartphone in vegan black textured leather back with prominent circular Leica Quad Camera module, stepped golden outer rim, professional camera-centric tech product photography against clean backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYQhewETcL4WLH7ievF1zhInt_t_uQuGf2IYWNOciRSzMl7F4sxW4D_UjrCwYgspVinm4cwlxhfYFcW7ZzghOEhQ7a5MwDf5XS901-fmqL92nOiG8c272fCuY_w_h7BJsceeFAaZFWjKYt8P4_XmToFx77cY1NOAjPssSC3i-zaeoWN-RnFXwH1RAlBYsIzPe6wrsJmnRQurNltEHThyDMcBJZtz-NRpwAHwhj1CDMAHLIpUIwMTWs7A"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 512903
+                </span>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">4.8</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">31 відгук</a>
+<span class="ml-auto font-specs-mono text-[10px] text-primary font-bold bg-primary-fixed/40 px-1.5 py-0.5 rounded">0-0-12</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Xiaomi 14 Ultra 16/512GB Black (Гарантія 24 міс.)
+              </h3>
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.73" WQHD+ AMOLED 120Hz</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Оптика:</span>
+<span class="font-semibold text-on-surface">Leica Quad 50+50+50+50 Мп</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Пам'ять:</span>
+<span class="font-semibold text-on-surface">16GB RAM / 512GB Storage</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Швидка зарядка:</span>
+<span class="font-semibold text-on-surface">90W Дротова / 80W Бездротова</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  49 999 ₴
+                </span>
+<span class="font-specs-mono text-caption line-through text-outline">
+                  54 999 ₴
+                </span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+<span>Офіційна сертифікація UA (UCRF)</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+<!-- Product Card 6: Apple iPhone 15 128GB Blue -->
+<article class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between relative group">
+<div>
+<div class="flex items-start justify-between mb-space-xs relative z-10">
+<span class="bg-surface-container-highest text-on-surface font-specs-mono text-[10px] font-extrabold px-2 py-0.5 rounded tracking-wide uppercase">
+                  НАРОДНИЙ ВИБІР
+                </span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">balance</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+</div>
+<div class="relative w-full aspect-square bg-surface-container-low/50 rounded-lg mb-space-sm p-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300" data-alt="Apple iPhone 15 in soft pastel frosted blue colorway, infused glass back, rounded contoured aluminum edges, dual camera module on light studio backing, clean pristine product shot with vivid clarity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApRMK7FXEsqzfXNXTj9AMPYaIeYQMJHSyYF8dom8OmhDf8_4VxUHUjkUGXem4dyaZ8kMDlSanhuTjHnQn91Ydrve7CR689K30F6vg30qMpEJsfon6wZWH9OHUZePsank6tHOfVoI0zYK0zigfxne0M_4tfNpZvCZsY2DFxKex-wvzDLkNvtDaWY-x-88362Rpg78pxAQrKNS_phSy6YjntqCUHvOJIjHYVVPfN13ymdhRpyqw_DX86GQ"/>
+<span class="absolute bottom-2 left-2 font-caption text-[10px] bg-surface-container-lowest/90 px-1.5 py-0.5 rounded text-on-surface-variant font-medium">
+                  Артикул: 439001
+                </span>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<div class="flex items-center text-amber-500">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-specs-mono text-caption font-bold ml-1 text-on-surface">4.9</span>
+</div>
+<span class="font-caption text-caption text-outline-variant">•</span>
+<a class="font-caption text-caption text-primary hover:underline" href="#">320 відгуків</a>
+<span class="ml-auto font-specs-mono text-[10px] text-tertiary font-bold bg-tertiary-fixed/30 px-1.5 py-0.5 rounded">0-0-12</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-bold leading-snug mb-2 group-hover:text-primary transition-colors">
+                Apple iPhone 15 128GB Blue (Офіційна гарантія 12 міс.)
+              </h3>
+<div class="bg-surface-container-low/60 rounded-lg p-2 mb-space-sm font-specs-mono text-[11px] text-on-surface-variant space-y-1">
+<div class="flex items-center justify-between">
+<span>Дисплей:</span>
+<span class="font-semibold text-on-surface">6.1" Dynamic Island OLED</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Процесор:</span>
+<span class="font-semibold text-on-surface">Apple A16 Bionic</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Камера:</span>
+<span class="font-semibold text-on-surface">48 Мп + 2x оптичний зум</span>
+</div>
+<div class="flex items-center justify-between">
+<span>Роз'єм:</span>
+<span class="font-semibold text-on-surface">USB-C універсальний</span>
+</div>
+</div>
+</div>
+<div class="space-y-space-sm pt-2">
+<div class="flex items-baseline gap-2">
+<span class="font-price-display-lg text-price-display-lg font-extrabold text-on-surface leading-none">
+                  31 999 ₴
+                </span>
+<span class="font-specs-mono text-caption line-through text-outline">
+                  34 999 ₴
+                </span>
+</div>
+<div class="flex items-center gap-1.5 font-caption text-[11px] text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>В наявності. Самовивіз або кур'єр</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="col-span-3 bg-primary-container hover:bg-primary text-on-primary py-2.5 px-3 rounded-lg font-headline-sm text-headline-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+<span>В кошик</span>
+</button>
+<button class="col-span-1 bg-surface-container-low hover:bg-surface-container text-primary rounded-lg font-headline-sm text-[12px] flex items-center justify-center border border-primary/20 hover:border-primary transition-all">
+                  1 клік
+                </button>
+</div>
+</div>
+</article>
+</div>
+<!-- Technical Pagination Navigation Unit -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="font-specs-mono text-caption text-on-surface-variant">
+            Сторінка <span class="font-bold text-on-surface">1</span> з 119 (12 товарів на сторінці)
+          </div>
+<div class="flex items-center gap-1.5">
+<button class="w-9 h-9 rounded-lg bg-surface-container-low text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high transition-colors disabled:opacity-40 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-9 h-9 rounded-lg bg-primary-container text-on-primary font-headline-sm text-body-sm font-bold shadow-xs">
+              1
+            </button>
+<button class="w-9 h-9 rounded-lg bg-surface-container text-on-surface font-headline-sm text-body-sm hover:bg-surface-container-high transition-colors">
+              2
+            </button>
+<button class="w-9 h-9 rounded-lg bg-surface-container text-on-surface font-headline-sm text-body-sm hover:bg-surface-container-high transition-colors">
+              3
+            </button>
+<span class="w-8 text-center text-outline-variant font-bold">...</span>
+<button class="w-9 h-9 rounded-lg bg-surface-container text-on-surface font-headline-sm text-body-sm hover:bg-surface-container-high transition-colors">
+              119
+            </button>
+<button class="px-3 h-9 rounded-lg bg-primary text-on-primary font-headline-sm text-caption flex items-center gap-1 hover:bg-primary-container transition-colors shadow-xs">
+<span>Вперед</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Omnichannel Trust & Warranty Infographic Strip -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-xs">
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">100% Офіційна техніка</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Вся техніка має гарантійні талони виробників та сервісну підтримку в Україні.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">payments</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">Оплата частинами 0%</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">До 24 платежів від ПриватБанку, monobank, А-Банку та Ощадбанку без комісій.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex items-start gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">published_with_changes</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">Легкий обмін 14 днів</div>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-0.5">Миттєве повернення коштів або заміна пристрою без тривалої бюрократії.</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- Interactive Client-side micro logic -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fast feedback for cart add interaction
+      const cartButtons = document.querySelectorAll('button:has(.material-symbols-outlined)');
+      cartButtons.forEach(btn => {
+        if (btn.textContent.includes('В кошик')) {
+          btn.addEventListener('click', (e) => {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span><span>Додано</span>`;
+            btn.classList.add('bg-tertiary', 'text-on-tertiary');
+            setTimeout(() => {
+              btn.innerHTML = originalHtml;
+              btn.classList.remove('bg-tertiary', 'text-on-tertiary');
+            }, 1800);
+          });
+        }
+      });
+    });
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest border-t border-outline-variant/40 mt-space-2xl"><div class="max-w-7xl mx-auto px-margin py-space-2xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl"><div class="space-y-space-sm"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-on-primary font-bold text-headline-sm">Т</div><span class="font-headline-sm text-headline-sm font-bold text-on-surface">ТЕХНОПРОСТІР</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Провідний омніканальний ритейлер електроніки та побутової техніки в Україні. Офіційна техніка, швидка логістика та бездоганний сервіс.</p><div class="pt-space-xs font-specs-mono text-specs-mono space-y-1"><div class="text-primary font-bold text-[15px]">0 800 300 777</div><div class="text-caption text-on-surface-variant">Безкоштовно зі всіх номерів України</div><div class="text-on-surface font-medium pt-1">support@technoprostir.ua</div><div class="text-caption text-on-surface-variant">Графік: Пн-Нд 08:00 - 21:00</div><div class="text-caption text-on-surface-variant pt-1">м. Київ, вул. Хрещатик, 22</div></div></div><div><h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-space-md">Каталог товарів</h3><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" href="#">Смартфони Apple та Android</a></li><li><a class="hover:text-primary transition-colors" href="#">Ноутбуки та ультрабуки</a></li><li><a class="hover:text-primary transition-colors" href="#">Комп'ютерні комплектуючі</a></li><li><a class="hover:text-primary transition-colors" href="#">Телевізори 4K та OLED</a></li><li><a class="hover:text-primary transition-colors" href="#">Холодильники та пральні машини</a></li><li><a class="hover:text-primary transition-colors" href="#">Зарядні станції та генератори</a></li></ul></div><div><h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-space-md">Покупцям</h3><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" href="#">Доставка Новою поштою</a></li><li><a class="hover:text-primary transition-colors" href="#">Способи оплати</a></li><li><a class="hover:text-primary transition-colors" href="#">Офіційна гарантія 1-3 роки</a></li><li><a class="hover:text-primary transition-colors" href="#">Обмін та повернення 14 днів</a></li><li><a class="hover:text-primary transition-colors" href="#">Програма лояльності «ТехноБонус»</a></li><li><a class="hover:text-primary transition-colors" href="#">Відстеження замовлення</a></li></ul></div><div><h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-space-md">Про компанію</h3><ul class="space-y-2 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" href="#">Про Технопростір</a></li><li><a class="hover:text-primary transition-colors" href="#">Мережа магазинів в Україні</a></li><li><a class="hover:text-primary transition-colors" href="#">Пресцентр</a></li><li><a class="hover:text-primary transition-colors" href="#">Кар'єра та вакансії</a></li><li><a class="hover:text-primary transition-colors" href="#">Політика конфіденційності</a></li><li><a class="hover:text-primary transition-colors" href="#">Публічна оферта</a></li></ul></div><div><h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-space-md">Оплата та доставка</h3><div class="flex flex-wrap gap-2 mb-space-md text-on-surface-variant"><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">VISA</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Mastercard</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Apple Pay</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Google Pay</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Privat24</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">mono</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Нова Пошта</span><span class="px-2 py-1 bg-surface-container rounded text-specs-mono font-bold">Meest</span></div><div class="space-y-2"><div class="font-caption text-caption text-on-surface-variant font-medium">Мобільний застосунок</div><div class="flex items-center gap-2"><button class="bg-on-background text-on-primary px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:opacity-90 transition-opacity"><span class="material-symbols-outlined text-[18px]">download</span><span class="font-specs-mono text-[11px] font-bold leading-none">App Store</span></button><button class="bg-on-background text-on-primary px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:opacity-90 transition-opacity"><span class="material-symbols-outlined text-[18px]">shop</span><span class="font-specs-mono text-[11px] font-bold leading-none">Google Play</span></button></div></div></div></div><div class="mt-space-2xl pt-space-lg border-t border-outline-variant/30 flex flex-col md:flex-row items-center justify-between gap-space-sm font-caption text-caption text-on-surface-variant"><p>© 2026 ТОВ «Технопростір Україна». Всі права захищено. Ціни вказані з урахуванням ПДВ.</p><div class="flex items-center gap-space-lg"><span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary"></span>Всі системи працюють стабільно</span><span>ISO 27001 Certified Retailer</span></div></div></div></footer></body></html>

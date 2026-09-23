@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogView from '../../components/CatalogView.astro';
+import { categories, inCategory } from '../../data/products.js';
+
+export function getStaticPaths() {
+  return categories.map((c) => ({ params: { category: c.slug }, props: { category: c } }));
+}
+
+const { category } = Astro.props;
+const products = inCategory(category.slug);
+
+const descriptions = {
+  smartphones: 'Смартфони в Україні: Apple, Samsung, Xiaomi та Google. Офіційна гарантія 12–24 місяці, покупка в розтермінування 0% та доставка Новою Поштою або самовивіз із 48 магазинів «ТЕХНОПРОСТІР».',
+  laptops: 'Ноутбуки та ПК для роботи, навчання та ігор: Apple, ASUS, Lenovo, Acer. Офіційна техніка, гарантія виробника і безкоштовна доставка по Україні.',
+  tv: 'Телевізори 4K OLED/QLED та аудіотехніка: Samsung, LG, Sony, TCL. Офіційна гарантія, доставка і підключення по всій Україні.',
+  appliances: 'Побутова техніка для дому: пральні машини, холодильники, пилососи. Офіційна гарантія, доставка та підключення.',
+  components: 'Комплектуючі для ПК: відеокарти, процесори, SSD та оперативна памʼять. Найкращі ціни,0% розтермінування.',
+  gaming: 'Ігрові консолі та аксесуари: PlayStation, Xbox, Nintendo. Офіційна техніка з гарантією.',
+  power: 'Електросамокати та портативні зарядні станції EcoFlow для дому, офісу і подорожей.',
+  wearables: 'Смарт-годинники та фітнес-браслети Apple, Samsung і не тільки. Офіційна гарантія.',
+  home: 'Техніка для дому та саду: роботи-пилососи, кавомашини. Офіційна гарантія, доставка по Україні.',
+};
+
+const crumbs = [
+  { label: 'Головна', href: '/' },
+  { label: 'Каталог', href: '/catalog' },
+  { label: category.name },
+];
+---
+<BaseLayout
+  title={`${category.name} — купити в Україні | ТЕХНОПРОСТІР`}
+  description={descriptions[category.slug]}
+>
+  <CatalogView
+    products={products}
+    title={category.name}
+    description={descriptions[category.slug]}
+    crumbs={crumbs}
+    showTradeIn={category.slug === 'smartphones'}
+  />
+</BaseLayout>

@@ -1,0 +1,115 @@
+---
+// Картка товару за дизайн-системою Precision Retail (Stitch: _3/_5/_2).
+// variant: 'grid' — каталог (специфікації + дві кнопки), 'home' — головна (одна кнопка).
+const { product: p, variant = 'grid' } = Astro.props;
+
+const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+const memAttr = (p.memory ?? []).join('|');
+---
+<article
+  class="group relative flex flex-col overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest transition hover:border-slate-300 hover:shadow-[0_4px_12px_-2px_rgba(15,23,42,0.08)]"
+  data-product-card
+  data-slug={p.slug}
+  data-brand={p.brand}
+  data-price={p.price}
+  data-stock={p.stock}
+  data-mem={memAttr}
+  data-rating={p.rating}
+  data-discount={discount}
+  data-new={p.badge === 'НОВИНКА' ? '1' : '0'}
+  data-category={p.category}
+  data-search={`${p.title} ${p.brand} ${p.category}`.toLowerCase()}
+>
+  <!-- Бейджі -->
+  <div class="absolute left-2 top-2 z-10 flex flex-col items-start gap-1">
+    {p.badge && <span class:list={['badge', `badge-${p.badgeKind ?? 'muted'}`]}>{p.badge}</span>}
+    {discount > 0 && <span class="badge badge-action">-{discount}%</span>}
+    {variant === 'grid' && p.installment && <span class="badge badge-muted lowercase">{p.installment}</span>}
+  </div>
+
+  <!-- Обране -->
+  <button type="button" aria-label="В обране" class="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full border border-outline-variant bg-white/85 text-slate-500 transition hover:text-pink-500">
+    <span class="material-symbols-outlined text-[18px]">favorite</span>
+  </button>
+
+  <!-- Медіа -->
+  <a href={`/product/${p.slug}`} class="block aspect-square bg-[#f8fafc] p-3" tabindex="-1" aria-hidden="true">
+    <div class="grid h-full select-none place-items-center text-7xl transition-transform duration-200 group-hover:scale-105">
+      {p.emoji}
+    </div>
+  </a>
+
+  <div class="flex flex-1 flex-col gap-space-sm p-space-md">
+    {variant === 'grid' && (
+      <div class="flex items-center justify-between text-specs-mono text-slate-400">
+        <span>Артикул: {p.sku}</span>
+        <span class="flex items-center gap-1 rounded-sm bg-slate-100 px-1.5 py-0.5 font-semibold text-slate-500">0-0-15</span>
+      </div>
+    )}
+
+    <!-- Рейтинг -->
+    <div class="flex items-center justify-between gap-2">
+      <span class="flex items-center gap-1 text-body-sm">
+        <span class="text-amber-500">★</span>
+        <span class="font-semibold">{p.rating.toFixed(1)}</span>
+        <span class="text-outline">({p.reviews} відгуків)</span>
+      </span>
+      {p.badge === 'НОВИНКА' && <span class="badge badge-new">NEW 2026</span>}
+    </div>
+
+    <a href={`/product/${p.slug}`} class="line-clamp-2 min-h-10 text-body-md font-semibold leading-5 text-on-surface hover:text-blue-600">
+      {p.title}
+    </a>
+
+    {variant === 'grid' && p.specs && (
+      <dl class="hidden flex-col gap-1 text-body-sm text-on-surface-variant md:flex">
+        {p.specs.slice(0, 3).map(([k, v]) => (
+          <div class="flex justify-between gap-2">
+            <dt class="text-slate-500">{k}:</dt>
+            <dd class="truncate font-medium text-on-surface">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    <p class="flex items-start gap-1 text-[12px] leading-4 text-tertiary">
+      <span class="material-symbols-outlined mt-px text-[14px]">local_shipping</span>
+      {p.stockLine}
+    </p>
+
+    <!-- Ціна -->
+    <div class="mt-auto flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-1">
+      <span class="tabular text-price-display-md text-on-surface">
+        {new Intl.NumberFormat('uk-UA').format(p.price)} ₴
+      </span>
+      {p.oldPrice && (
+        <>
+          <span class="tabular text-specs-mono text-slate-400 line-through">
+            {new Intl.NumberFormat('uk-UA').format(p.oldPrice)} ₴
+          </span>
+          <span class="badge badge-action">-{discount}%</span>
+        </>
+      )}
+    </div>
+
+    <!-- Дії -->
+    <div class="flex items-center gap-space-sm">
+      <button
+        type="button"
+        data-add-to-cart={p.slug}
+        class:list={[
+          'flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-blue-600 py-2.5 font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800',
+          variant === 'grid' ? 'text-headline-sm' : 'text-body-md',
+        ]}
+      >
+        <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+        {variant === 'grid' ? 'В кошик' : 'Купити'}
+      </button>
+      {variant === 'grid' && (
+        <a href={`/product/${p.slug}`} class="btn-secondary whitespace-nowrap px-3 py-2.5 text-body-sm font-semibold">
+          В 1 клік
+        </a>
+      )}
+    </div>
+  </div>
+</article>

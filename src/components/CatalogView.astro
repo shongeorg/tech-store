@@ -1,0 +1,524 @@
+---
+// Каталог/категорія: breadcrumbs, фільтри-сайдбар (Stitch: _3 desktop, _6 mobile drawer),
+// сортування, сітка товарів. Фільтрація — клієнтська (статичний сайт).
+import ProductCard from './ProductCard.astro';
+
+const {
+  products,
+  title,
+  description = '',
+  crumbs = [],
+  showTradeIn = false,
+} = Astro.props;
+
+const total = products.length;
+const prices = products.map((p) => p.price);
+const priceMin = Math.floor(Math.min(...prices) / 1000) * 1000;
+const priceMax = Math.ceil(Math.max(...prices) / 1000) * 1000;
+
+const brandCounts = new Map();
+for (const p of products) brandCounts.set(p.brand, (brandCounts.get(p.brand) ?? 0) + 1);
+const brandsList = [...brandCounts.entries()].sort((a, b) => b[1] - a[1]);
+const chipBrands = brandsList.slice(0, 7).map(([b]) => b);
+
+const memOptions = ['128 ГБ', '256 ГБ', '512 ГБ', '1 ТБ'].filter((m) =>
+  products.some((p) => p.memory?.includes(m)),
+);
+
+const sortOptions = [
+  ['pop', 'За популярністю'],
+  ['rating', 'За рейтингом'],
+  ['price-asc', 'Від дешевих до дорогих'],
+  ['price-desc', 'Від дорогих до дешевих'],
+  ['new', 'Спочатку новинки'],
+  ['discount', 'За розміром знижки'],
+];
+---
+
+<div data-catalog-root>
+  <!-- Breadcrumbs -->
+  <nav class="shell flex items-center gap-1 py-space-sm text-body-sm text-on-surface-variant" aria-label="Хлібні крихти">
+    {crumbs.map((c, i) => (
+      <>
+        {i > 0 && <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>}
+        {c.href ? <a href={c.href} class="hover:text-primary">{c.label}</a> : <span class="font-medium text-on-surface">{c.label}</span>}
+      </>
+    ))}
+  </nav>
+
+  <div class="shell pb-space-2xl">
+    <!-- Заголовок -->
+    <div class="mb-space-md flex flex-wrap items-end justify-between gap-space-md">
+      <div>
+        <h1 class="text-headline-xl tracking-tight text-on-surface">
+          {title}
+          <span class="ml-2 text-body-md font-normal text-outline">{total} товарів</span>
+        </h1>
+        {description && <p class="mt-1 max-w-4xl text-body-md text-on-surface-variant">{description}</p>}
+      </div>
+      <p class="flex items-center gap-2 text-body-sm text-on-surface-variant">
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        Склад у Києві: 94% наявність
+        <span class="text-outline">• Оновлено: сьогодні о 09:30</span>
+      </p>
+    </div>
+
+    <!-- Чіпи брендів -->
+    {chipBrands.length > 1 && (
+      <div class="mb-space-md flex flex-wrap gap-space-sm">
+        <button type="button" class="chip is-active" data-chip-all>Усі</button>
+        {chipBrands.map((b) => (
+          <button type="button" class="chip" data-chip-brand={b}>
+            {b}
+            <span class="tabular opacity-70">{brandCounts.get(b)}</span>
+          </button>
+        ))}
+      </div>
+    )}
+
+    <div class="flex gap-space-xl">
+      <!-- ================= ФІЛЬТРИ ================= -->
+      <aside class="filters-panel" data-filters-panel aria-label="Фільтри">
+        <div class="card p-space-md">
+          <div class="mb-space-md flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-headline-sm">
+              Фільтри
+              <span class="hidden rounded-full bg-blue-600 px-2 text-[11px] font-bold text-white" data-filter-count>0</span>
+            </h2>
+            <button type="button" class="flex items-center gap-1 text-body-sm text-blue-600 hover:underline" data-reset-filters>
+              Скинути всі
+            </button>
+            <button type="button" class="lg:hidden" data-close-filters aria-label="Закрити">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-space-xl">
+            <!-- Ціна -->
+            <section>
+              <h3 class="mb-space-sm flex items-center justify-between text-body-md font-bold">
+                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-600">payments</span>Ціна, ₴</span>
+                <span class="material-symbols-outlined text-[18px] text-slate-400">expand_less</span>
+              </h3>
+              <div class="mb-space-sm flex items-center gap-space-sm">
+                <input type="number" class="input py-2 text-body-sm" placeholder="Від" value={priceMin} min={priceMin} max={priceMax} data-price-min-input />
+                <input type="number" class="input py-2 text-body-sm" placeholder="До" value={priceMax} min={priceMin} max={priceMax} data-price-max-input />
+              </div>
+              <div class="tp-range" data-range>
+                <div class="tp-range-track"></div>
+                <div class="tp-range-fill" data-range-fill></div>
+                <input type="range" min={priceMin} max={priceMax} step={1000} value={priceMin} data-range-min aria-label="Ціна від" />
+                <input type="range" min={priceMin} max={priceMax} step={1000} value={priceMax} data-range-max aria-label="Ціна до" />
+              </div>
+              <div class="mt-1 flex justify-between text-specs-mono text-slate-500">
+                <span>мін: {new Intl.NumberFormat('uk-UA').format(priceMin)} ₴</span>
+                <span>макс: {new Intl.NumberFormat('uk-UA').format(priceMax)} ₴</span>
+              </div>
+            </section>
+
+            <!-- Наявність -->
+            <section>
+              <h3 class="mb-space-sm flex items-center justify-between text-body-md font-bold">
+                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-600">inventory_2</span>Наявність та доставка</span>
+                <span class="material-symbols-outlined text-[18px] text-slate-400">expand_less</span>
+              </h3>
+              <label class="mb-2 flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 hover:bg-slate-50">
+                <span class="flex items-center gap-2 text-body-md">
+                  <input type="checkbox" class="h-4.5 w-4.5 accent-blue-600" data-filter-stock />
+                  Тільки в наявності
+                </span>
+                <span class="tabular text-specs-mono text-slate-500">{products.filter((p) => p.stock === 'in').length}</span>
+              </label>
+              <label class="flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 hover:bg-slate-50">
+                <span class="flex items-center gap-2 text-body-md">
+                  <input type="checkbox" class="h-4.5 w-4.5 accent-blue-600" data-filter-preorder />
+                  Передзамовлення
+                </span>
+                <span class="tabular text-specs-mono text-slate-500">{products.filter((p) => p.stock === 'order').length}</span>
+              </label>
+            </section>
+
+            <!-- Бренд -->
+            <section>
+              <h3 class="mb-space-sm flex items-center justify-between text-body-md font-bold">
+                <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-600">sell</span>Бренд</span>
+                <span class="material-symbols-outlined text-[18px] text-slate-400">expand_less</span>
+              </h3>
+              <div class="relative mb-space-sm">
+                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[16px] text-slate-400">search</span>
+                <input type="search" placeholder="Пошук бренду…" class="input py-2 pl-8 text-body-sm" data-brand-search />
+              </div>
+              <div class="flex max-h-56 flex-col gap-0.5 overflow-y-auto" data-brand-list>
+                {brandsList.map(([b, count]) => (
+                  <label class="flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 hover:bg-slate-50" data-brand-row={b.toLowerCase()}>
+                    <span class="flex items-center gap-2 text-body-md">
+                      <input type="checkbox" class="h-4.5 w-4.5 accent-blue-600" value={b} data-filter-brand />
+                      {b}
+                    </span>
+                    <span class="tabular text-specs-mono text-slate-500">{count}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
+
+            <!-- Вбудована пам'ять -->
+            {memOptions.length > 0 && (
+              <section>
+                <h3 class="mb-space-sm flex items-center justify-between text-body-md font-bold">
+                  <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-blue-600">sd_card</span>Вбудована пам'ять</span>
+                  <span class="material-symbols-outlined text-[18px] text-slate-400">expand_less</span>
+                </h3>
+                <div class="flex flex-wrap gap-space-xs">
+                  {memOptions.map((m) => (
+                    <button type="button" class="chip" data-filter-mem={m}>{m}</button>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {showTradeIn && (
+              <section class="rounded-lg bg-blue-600 p-space-md text-white">
+                <span class="badge mb-2 inline-flex bg-orange-500 text-white">ВИГОДА ДО 70%</span>
+                <p class="text-headline-sm font-bold">Обміняйте старий телефон на новий iPhone 16</p>
+                <p class="mt-1 text-body-sm text-blue-100">Оцініть онлайн за 2 хвилини або в будь-якому магазині «Технопростір».</p>
+                <a href="#" class="mt-space-sm inline-block text-body-sm font-semibold underline">Розрахувати вартість →</a>
+              </section>
+            )}
+
+            <button type="button" class="btn-primary w-full py-3 text-body-md lg:hidden" data-apply-count data-close-filters>
+              Показати <span data-shown-count>{total}</span> товарів
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ================= ТОВАРИ ================= -->
+      <div class="min-w-0 flex-1">
+        <!-- Панель сортування -->
+        <div class="card mb-space-md flex flex-wrap items-center gap-space-md px-space-md py-space-sm">
+          <button type="button" class="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-body-sm font-semibold text-blue-700 lg:hidden" data-open-filters>
+            <span class="material-symbols-outlined text-[18px]">tune</span>
+            Фільтри
+            <span class="hidden rounded-full bg-blue-600 px-2 text-[11px] font-bold text-white" data-filter-count>0</span>
+          </button>
+          <label class="flex items-center gap-space-sm text-body-sm">
+            <span class="text-on-surface-variant">Сортування:</span>
+            <select class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-body-sm font-medium focus:border-blue-600 focus:outline-none" data-sort-select>
+              {sortOptions.map(([v, label]) => <option value={v}>{label}</option>)}
+            </select>
+          </label>
+          <p class="text-body-sm text-on-surface-variant">
+            Показано <span class="tabular font-semibold text-on-surface" data-shown-count>{total}</span> із <span class="tabular">{total}</span> товарів
+          </p>
+          <div class="ml-auto hidden items-center gap-1 md:flex">
+            <button type="button" class="grid h-8 w-8 place-items-center rounded-md bg-blue-600 text-white" aria-label="Сітка">
+              <span class="material-symbols-outlined text-[18px]">grid_view</span>
+            </button>
+            <button type="button" class="grid h-8 w-8 place-items-center rounded-md border border-slate-300 text-slate-500" aria-label="Список">
+              <span class="material-symbols-outlined text-[18px]">view_list</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Активні фільтри -->
+        <div class="mb-space-md flex flex-wrap items-center gap-space-sm" data-active-chips hidden>
+          <span class="text-caption font-bold uppercase tracking-wide text-outline">Фільтри:</span>
+          <span class="flex flex-wrap items-center gap-space-sm" data-active-chips-list></span>
+          <button type="button" class="text-body-sm font-semibold text-blue-600 hover:underline" data-reset-filters>Очистити всі</button>
+        </div>
+
+        <!-- Сітка -->
+        <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 xl:grid-cols-3" data-product-grid>
+          {products.map((p) => <ProductCard product={p} />)}
+        </div>
+
+        <!-- Порожній стан -->
+        <div class="card hidden flex-col items-center gap-space-md p-space-2xl text-center" data-empty-state>
+          <span class="material-symbols-outlined text-5xl text-slate-300">search_off</span>
+          <p class="text-headline-md">Товарів не знайдено</p>
+          <p class="max-w-md text-body-md text-on-surface-variant">
+            Спробуйте змінити пошуковий запит або очистити фільтри, щоб побачити більше результатів.
+          </p>
+          <button type="button" class="btn-primary px-6 py-2.5 text-body-md" data-reset-filters>Очистити фільтри</button>
+        </div>
+
+        <!-- Пагінація -->
+        <div class="mt-space-xl flex flex-col items-center gap-space-md" data-pagination>
+          <p class="text-body-sm text-on-surface-variant">Сторінка <span class="tabular font-semibold">1</span> із <span class="tabular">1</span> (<span class="tabular" data-shown-count>{total}</span> товарів на сторінці)</p>
+          <div class="flex items-center gap-space-xs">
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-400" disabled>
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-md bg-blue-600 font-semibold text-white">1</button>
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-600 hover:border-blue-400" disabled>
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Переваги після каталогу -->
+        <div class="mt-space-xl grid grid-cols-1 gap-space-md md:grid-cols-3">
+          <div class="card flex items-start gap-space-sm p-space-md">
+            <span class="material-symbols-outlined text-[22px] text-blue-600">verified</span>
+            <div>
+              <p class="text-body-md font-bold">100% Офіційна техніка</p>
+              <p class="text-body-sm text-on-surface-variant">Всі товари з гарантійним талоном виробника та сервісною підтримкою в Україні.</p>
+            </div>
+          </div>
+          <div class="card flex items-start gap-space-sm p-space-md">
+            <span class="material-symbols-outlined text-[22px] text-emerald-600">credit_card</span>
+            <div>
+              <p class="text-body-md font-bold">Оплата частинами 0%</p>
+              <p class="text-body-sm text-on-surface-variant">До 24 платежів від ПриватБанку, monobank та А-Банку без переплат.</p>
+            </div>
+          </div>
+          <div class="card flex items-start gap-space-sm p-space-md">
+            <span class="material-symbols-outlined text-[22px] text-orange-600">autorenew</span>
+            <div>
+              <p class="text-body-md font-bold">Легкий обмін 14 днів</p>
+              <p class="text-body-sm text-on-surface-variant">Міняйте відкритий товар або поверніть пристрій без зайвих бюрократій.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initCatalog(root) {
+    const grid = root.querySelector('[data-product-grid]');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll('[data-product-card]'));
+
+    const panel = root.querySelector('[data-filters-panel]');
+    const brandChecks = Array.from(root.querySelectorAll('[data-filter-brand]'));
+    const stockOnly = root.querySelector('[data-filter-stock]');
+    const preorder = root.querySelector('[data-filter-preorder]');
+    const memButtons = Array.from(root.querySelectorAll('[data-filter-mem]'));
+    const chipAll = root.querySelector('[data-chip-all]');
+    const chipBrands = Array.from(root.querySelectorAll('[data-chip-brand]'));
+    const minInput = root.querySelector('[data-price-min-input]');
+    const maxInput = root.querySelector('[data-price-max-input]');
+    const rangeMin = root.querySelector('[data-range-min]');
+    const rangeMax = root.querySelector('[data-range-max]');
+    const rangeFill = root.querySelector('[data-range-fill]');
+    const sortSelect = root.querySelector('[data-sort-select]');
+    const brandSearch = root.querySelector('[data-brand-search]');
+    const activeChips = root.querySelector('[data-active-chips]');
+    const activeList = root.querySelector('[data-active-chips-list]');
+    const emptyState = root.querySelector('[data-empty-state]');
+    const pagination = root.querySelector('[data-pagination]');
+    const shownCounts = Array.from(root.querySelectorAll('[data-shown-count]'));
+    const filterCounts = Array.from(root.querySelectorAll('[data-filter-count]'));
+
+    const priceBounds = cards.map((c) => Number(c.dataset.price));
+    const pMin = Math.floor(Math.min(...priceBounds) / 1000) * 1000;
+    const pMax = Math.ceil(Math.max(...priceBounds) / 1000) * 1000;
+
+    const state = { brands: new Set(), mem: new Set(), stock: false, preorder: false, min: pMin, max: pMax, sort: 'pop' };
+
+    const fmt = (n) => new Intl.NumberFormat('uk-UA').format(n);
+
+    function syncRangeVisual() {
+      const span = pMax - pMin || 1;
+      const left = ((state.min - pMin) / span) * 100;
+      const right = ((state.max - pMin) / span) * 100;
+      if (rangeFill) {
+        rangeFill.style.left = left + '%';
+        rangeFill.style.width = Math.max(0, right - left) + '%';
+      }
+      if (minInput) minInput.value = state.min;
+      if (maxInput) maxInput.value = state.max;
+      if (rangeMin) rangeMin.value = state.min;
+      if (rangeMax) rangeMax.value = state.max;
+    }
+
+    function activeFilterCount() {
+      return state.brands.size + state.mem.size + (state.stock ? 1 : 0) + (state.preorder ? 1 : 0)
+        + (state.min > pMin || state.max < pMax ? 1 : 0);
+    }
+
+    function renderActiveChips() {
+      if (!activeChips || !activeList) return;
+      const items = [];
+      state.brands.forEach((b) => items.push({ type: 'brand', value: b, label: b }));
+      state.mem.forEach((m) => items.push({ type: 'mem', value: m, label: m }));
+      if (state.min > pMin || state.max < pMax) {
+        items.push({ type: 'price', value: '', label: `${fmt(state.min)} – ${fmt(state.max)} ₴` });
+      }
+      if (state.stock) items.push({ type: 'stock', value: '', label: 'В наявності' });
+      if (state.preorder) items.push({ type: 'preorder', value: '', label: 'Передзамовлення' });
+
+      activeChips.hidden = items.length === 0;
+      activeList.innerHTML = '';
+      for (const it of items) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip is-active';
+        btn.innerHTML = `${it.label} <span class="material-symbols-outlined text-[14px]">close</span>`;
+        btn.addEventListener('click', () => {
+          if (it.type === 'brand') toggleBrand(it.value, false);
+          if (it.type === 'mem') toggleMem(it.value, false);
+          if (it.type === 'price') { state.min = pMin; state.max = pMax; }
+          if (it.type === 'stock') { state.stock = false; if (stockOnly) stockOnly.checked = false; }
+          if (it.type === 'preorder') { state.preorder = false; if (preorder) preorder.checked = false; }
+          apply();
+        });
+        activeList.appendChild(btn);
+      }
+    }
+
+    function apply() {
+      let shown = 0;
+      for (const card of cards) {
+        const brand = card.dataset.brand;
+        const price = Number(card.dataset.price);
+        const stock = card.dataset.stock;
+        const mem = (card.dataset.mem || '').split('|').filter(Boolean);
+
+        const okBrand = state.brands.size === 0 || state.brands.has(brand);
+        const okPrice = price >= state.min && price <= state.max;
+        const stockFilters = (state.stock || state.preorder);
+        let okStock = true;
+        if (state.stock && state.preorder) okStock = true;
+        else if (state.stock) okStock = stock === 'in';
+        else if (state.preorder) okStock = stock === 'order';
+        const okStockFinal = stockFilters ? okStock : true;
+        const okMem = state.mem.size === 0 || [...state.mem].some((m) => mem.includes(m));
+
+        const visible = okBrand && okPrice && okStockFinal && okMem;
+        card.classList.toggle('hidden', !visible);
+        if (visible) shown += 1;
+      }
+
+      shownCounts.forEach((el) => (el.textContent = String(shown)));
+      const fCount = activeFilterCount();
+      filterCounts.forEach((el) => {
+        el.textContent = String(fCount);
+        el.classList.toggle('hidden', fCount === 0);
+      });
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', shown !== 0);
+        emptyState.style.display = shown === 0 ? 'flex' : '';
+      }
+      if (pagination) pagination.classList.toggle('hidden', shown === 0);
+      chipAll?.classList.toggle('is-active', state.brands.size === 0);
+      chipBrands.forEach((c) => c.classList.toggle('is-active', state.brands.has(c.dataset.chipBrand)));
+      memButtons.forEach((b) => b.classList.toggle('is-active', state.mem.has(b.dataset.filterMem)));
+      renderActiveChips();
+      syncRangeVisual();
+    }
+
+    function toggleBrand(brand, on) {
+      if (on === undefined) on = !state.brands.has(brand);
+      if (on) state.brands.add(brand);
+      else state.brands.delete(brand);
+      const check = brandChecks.find((c) => c.value === brand);
+      if (check) check.checked = state.brands.has(brand);
+    }
+
+    function toggleMem(mem, on) {
+      if (on === undefined) on = !state.mem.has(mem);
+      if (on) state.mem.add(mem);
+      else state.mem.delete(mem);
+    }
+
+    function resetAll() {
+      state.brands.clear();
+      state.mem.clear();
+      state.stock = false;
+      state.preorder = false;
+      state.min = pMin;
+      state.max = pMax;
+      brandChecks.forEach((c) => (c.checked = false));
+      memButtons.forEach((b) => b.classList.remove('is-active'));
+      if (stockOnly) stockOnly.checked = false;
+      if (preorder) preorder.checked = false;
+      apply();
+    }
+
+    function sortCards(mode) {
+      const cmp = {
+        pop: () => 0,
+        rating: (a, b) => Number(b.dataset.rating) - Number(a.dataset.rating),
+        'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
+        'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
+        new: (a, b) => Number(b.dataset.new) - Number(a.dataset.new),
+        discount: (a, b) => Number(b.dataset.discount) - Number(a.dataset.discount),
+      }[mode];
+      [...cards].sort(cmp).forEach((c) => grid.appendChild(c));
+    }
+
+    // --- Події ---
+    brandChecks.forEach((c) =>
+      c.addEventListener('change', () => {
+        toggleBrand(c.value, c.checked);
+        apply();
+      }),
+    );
+    stockOnly?.addEventListener('change', () => { state.stock = stockOnly.checked; apply(); });
+    preorder?.addEventListener('change', () => { state.preorder = preorder.checked; apply(); });
+    memButtons.forEach((b) =>
+      b.addEventListener('click', () => {
+        toggleMem(b.dataset.filterMem);
+        apply();
+      }),
+    );
+    chipBrands.forEach((c) =>
+      c.addEventListener('click', () => {
+        toggleBrand(c.dataset.chipBrand);
+        apply();
+      }),
+    );
+    chipAll?.addEventListener('click', () => {
+      state.brands.clear();
+      brandChecks.forEach((c) => (c.checked = false));
+      apply();
+    });
+
+    const clamp = (v) => Math.min(pMax, Math.max(pMin, v));
+    minInput?.addEventListener('input', () => {
+      state.min = clamp(Number(minInput.value) || pMin);
+      if (state.min > state.max) state.max = state.min;
+      apply();
+    });
+    maxInput?.addEventListener('input', () => {
+      state.max = clamp(Number(maxInput.value) || pMax);
+      if (state.max < state.min) state.min = state.max;
+      apply();
+    });
+    rangeMin?.addEventListener('input', () => {
+      state.min = Math.min(Number(rangeMin.value), state.max);
+      apply();
+    });
+    rangeMax?.addEventListener('input', () => {
+      state.max = Math.max(Number(rangeMax.value), state.min);
+      apply();
+    });
+
+    sortSelect?.addEventListener('change', () => {
+      state.sort = sortSelect.value;
+      sortCards(state.sort);
+    });
+
+    brandSearch?.addEventListener('input', () => {
+      const q = brandSearch.value.trim().toLowerCase();
+      root.querySelectorAll('[data-brand-row]').forEach((row) => {
+        row.classList.toggle('hidden', q !== '' && !row.dataset.brandRow.includes(q));
+      });
+    });
+
+    root.querySelectorAll('[data-reset-filters]').forEach((b) => b.addEventListener('click', resetAll));
+
+    // Mobile drawer
+    const openBtn = root.querySelector('[data-open-filters]');
+    const closeBtns = root.querySelectorAll('[data-close-filters]');
+    openBtn?.addEventListener('click', () => panel?.classList.add('is-open'));
+    closeBtns.forEach((b) => b.addEventListener('click', () => panel?.classList.remove('is-open')));
+
+    apply();
+  }
+
+  document.querySelectorAll('[data-catalog-root]').forEach(initCatalog);
+</script>

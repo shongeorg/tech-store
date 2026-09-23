@@ -1,0 +1,566 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, bySlug, categories } from '../../data/products.js';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+
+const p = Astro.props.product;
+const category = categories.find((c) => c.slug === p.category);
+const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+const monthly = Math.round(p.price / 12);
+const related = products.filter((r) => r.category === p.category && r.slug !== p.slug).slice(0, 4);
+const fullSpecs = p.fullSpecs ?? [
+  { group: 'Основні характеристики', rows: [...p.specs, ['Бренд', p.brand], ['Гарантія', '12–24 місяці, офіційна']] },
+];
+
+const crumbs = [
+  { label: 'Головна', href: '/' },
+  { label: 'Каталог', href: '/catalog' },
+  { label: category.name, href: `/catalog/${category.slug}` },
+  { label: p.brand },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.title,
+  sku: p.sku,
+  brand: { '@type': 'Brand', name: p.brand },
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: p.rating, reviewCount: p.reviews },
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'UAH',
+    price: p.price,
+    availability: p.stock === 'in' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+  },
+};
+
+const tabs = [
+  ['specs', 'Характеристики'],
+  ['desc', 'Опис та огляд'],
+  ['reviews', `Відгуки ${p.reviews}`],
+  ['accessories', 'Аксесуари та чохли'],
+  ['qa', 'Питання та відповіді'],
+];
+---
+<BaseLayout
+  title={`${p.title} — ціна в Україні | ТЕХНОПРОСТІР`}
+  description={`${p.title}: ціна ${new Intl.NumberFormat('uk-UA').format(p.price)} ₴. Офіційна гарантія, доставка Новою Поштою по Україні, розтермінування 0%.`}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="shell py-space-md">
+    <!-- Breadcrumbs -->
+    <nav class="mb-space-md flex flex-wrap items-center gap-1 text-body-sm text-on-surface-variant" aria-label="Хлібні крихти">
+      {crumbs.map((c, i) => (
+        <>
+          {i > 0 && <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>}
+          {c.href ? <a href={c.href} class="hover:text-primary">{c.label}</a> : <span class="font-medium text-on-surface">{c.label}</span>}
+        </>
+      ))}
+    </nav>
+
+    <!-- Верх: галерея + блок купівлі -->
+    <div class="grid gap-space-xl lg:grid-cols-2">
+      <!-- Галерея -->
+      <div>
+        <div class="mb-space-sm flex flex-wrap gap-space-xs">
+          {p.badge && <span class:list={['badge', `badge-${p.badgeKind ?? 'muted'}`]}>{p.badge === 'ХІТ' ? 'ТОППРОДАЖ' : p.badge}</span>}
+          {p.installment && <span class="badge bg-blue-50 text-blue-700">Розтермінування 0%</span>}
+          {discount > 0 && <span class="badge badge-action">-{discount}% знижка</span>}
+        </div>
+
+        <div class="card relative grid aspect-square place-items-center bg-white p-space-2xl">
+          <span class="absolute left-3 top-3 flex flex-col gap-1">
+            <span class="badge badge-hit">ХІТ ПРОДАЖУ</span>
+            <span class="badge badge-muted">Розтермінування 0%</span>
+            <span class="badge badge-action">-{discount}% ЗНИЖКА</span>
+          </span>
+          <span class="absolute right-3 top-3 flex gap-space-xs">
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-outline-variant bg-white/85 text-slate-500 hover:text-blue-600" aria-label="Порівняти">
+              <span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+            </button>
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-full border border-outline-variant bg-white/85 text-slate-500 hover:text-blue-600" aria-label="Збільшити">
+              <span class="material-symbols-outlined text-[18px]">zoom_in</span>
+            </button>
+          </span>
+          <span class="select-none text-[120px] leading-none sm:text-[160px]" data-main-image>{p.emoji}</span>
+        </div>
+
+        <!-- Спец-смуга під головним фото -->
+        <div class="mt-space-sm grid grid-cols-2 gap-space-xs sm:grid-cols-4">
+          {p.specs.slice(0, 4).map(([k, v]) => (
+            <div class="rounded-lg bg-surface-container-low px-space-sm py-2 text-center">
+              <p class="truncate text-[11px] text-slate-500">{k}</p>
+              <p class="truncate text-body-sm font-semibold">{v}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Мініатюри -->
+        <div class="mt-space-sm flex gap-space-xs overflow-x-auto pb-1" data-thumbs>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <button
+              type="button"
+              class:list={[
+                'grid h-16 w-16 shrink-0 place-items-center rounded-lg border-2 bg-[#f8fafc] text-2xl',
+                i === 0 ? 'border-blue-600' : 'border-transparent hover:border-slate-300',
+              ]}
+              data-thumb
+              aria-label={`Вигляд ${i + 1}`}
+            >
+              {p.emoji}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Блок купівлі -->
+      <div class="flex flex-col gap-space-md">
+        <div>
+          <p class="mb-space-xs text-specs-mono text-slate-500">Артикул: ТП-{p.sku} · Гарантія 12 міс.</p>
+          <h1 class="text-headline-xl leading-tight tracking-tight">{p.title}</h1>
+          <div class="mt-space-sm flex flex-wrap items-center gap-space-md">
+            <span class="flex items-center gap-1 text-body-md">
+              <span class="text-amber-500">★★★★★</span>
+              <b>{p.rating.toFixed(1)}</b>
+              <span class="text-outline">• {p.reviews} відгуків</span>
+            </span>
+            <a href="#reviews" class="text-body-sm text-blue-600 hover:underline">Залишити відгук</a>
+            <span class="flex items-center gap-1 text-body-sm text-emerald-600">
+              <span class="material-symbols-outlined text-[16px]">verified</span> В наявності
+            </span>
+          </div>
+        </div>
+
+        <!-- Ціна -->
+        <div class="card bg-blue-50/60 p-space-md">
+          <div class="flex flex-wrap items-baseline gap-space-sm">
+            <span class="tabular text-[32px] font-extrabold leading-none text-on-surface">
+              {new Intl.NumberFormat('uk-UA').format(p.price)} ₴
+            </span>
+            {p.oldPrice && (
+              <span class="tabular text-body-md text-slate-500 line-through">
+                {new Intl.NumberFormat('uk-UA').format(p.oldPrice)} ₴
+              </span>
+            )}
+            {discount > 0 && <span class="badge badge-action">-{discount}%</span>}
+            {p.oldPrice && (
+              <span class="text-body-sm font-semibold text-emerald-600">
+                Економія {new Intl.NumberFormat('uk-UA').format(p.oldPrice - p.price)} ₴
+              </span>
+            )}
+          </div>
+          <div class="mt-space-sm flex flex-col gap-1 text-body-sm text-on-surface-variant">
+            <p class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px] text-emerald-600">redeem</span>
+              Кешбек <b class="text-emerald-600">+{new Intl.NumberFormat('uk-UA').format(Math.round(p.price * 0.02))} ₴</b> у «ТехноБонус» після отримання
+            </p>
+            <p class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px] text-blue-600">credit_card</span>
+              або від <b class="text-blue-700">{new Intl.NumberFormat('uk-UA').format(monthly)} ₴/міс</b> · 15 платежів без переплати
+            </p>
+          </div>
+        </div>
+
+        {/* Вибір кольору */}
+        {p.colors && (
+          <div>
+            <p class="mb-space-xs text-body-sm text-on-surface-variant">
+              Колір корпусу: <b class="text-on-surface" data-color-label>{p.colors[0].name}</b>
+            </p>
+            <div class="flex gap-space-sm" data-color-group>
+              {p.colors.map((c, i) => (
+                <button
+                  type="button"
+                  class:list={[
+                    'h-8 w-8 rounded-full border-2 shadow-sm transition',
+                    i === 0 ? 'border-blue-600 ring-2 ring-blue-200' : 'border-white',
+                  ]}
+                  style={`background-color:${c.hex}`}
+                  data-color={c.name}
+                  aria-label={c.name}
+                  title={c.name}
+                ></button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Вибір пам'яті */}
+        {p.memory && (
+          <div>
+            <p class="mb-space-xs text-body-sm text-on-surface-variant">Вбудована пам'ять (НЗМ):</p>
+            <div class="flex flex-wrap gap-space-xs" data-mem-group>
+              {p.memory.map((m, i) => (
+                <button
+                  type="button"
+                  class:list={[
+                    'rounded-md border px-space-md py-2 text-body-sm font-semibold transition',
+                    i === (p.memory.length > 1 ? 1 : 0) ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white hover:border-blue-400',
+                  ]}
+                  data-mem={m}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Кількість + кнопки */}
+        <div class="flex items-center gap-space-md">
+          <div class="flex items-center rounded-lg border border-slate-300">
+            <button type="button" class="grid h-11 w-10 place-items-center text-slate-500 hover:text-blue-600" data-qty-minus aria-label="Менше">
+              <span class="material-symbols-outlined text-[18px]">remove</span>
+            </button>
+            <span class="tabular w-8 text-center text-body-md font-semibold" data-qty-value>1</span>
+            <button type="button" class="grid h-11 w-10 place-items-center text-slate-500 hover:text-blue-600" data-qty-plus aria-label="Більше">
+              <span class="material-symbols-outlined text-[18px]">add</span>
+            </button>
+          </div>
+          <p class="text-body-sm text-on-surface-variant" data-stock-line>{p.stockLine}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-space-sm">
+          <button type="button" data-add-to-cart={p.slug} data-qty="1" data-buy-now class="btn-primary flex flex-1 items-center justify-center gap-2 px-space-xl py-3.5 text-headline-sm">
+            <span class="material-symbols-outlined text-[20px]">shopping_cart</span> Купити
+          </button>
+          <button type="button" data-add-to-cart={p.slug} class="btn-secondary flex items-center justify-center px-space-lg py-3.5" aria-label="В обране">
+            <span class="material-symbols-outlined text-[20px]">favorite</span>
+          </button>
+          <button type="button" data-add-to-cart={p.slug} class="btn-outline flex items-center justify-center gap-1 px-space-lg py-3.5 text-body-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px]">bolt</span> В 1 клік
+          </button>
+        </div>
+        <p class="-mt-2 flex items-center gap-2 text-body-sm text-on-surface-variant">
+          <span class="rounded-md bg-blue-50 px-space-sm py-0.5 font-semibold text-blue-700">0% розстрочка</span>
+          Оплата частинами до 24 платежів без переплат
+        </p>
+
+        {/* Доставка */}
+        <div class="card divide-y divide-outline-variant">
+          <div class="flex items-center justify-between px-space-md py-space-sm">
+            <span class="flex items-center gap-2 text-body-md">
+              <span class="material-symbols-outlined text-[18px] text-emerald-600">storefront</span>
+              Самовивіз із магазину Технопростір
+            </span>
+            <b class="text-body-sm text-emerald-600">Безкоштовно</b>
+          </div>
+          <div class="flex items-center justify-between px-space-md py-space-sm">
+            <span class="flex items-center gap-2 text-body-md">
+              <span class="material-symbols-outlined text-[18px] text-blue-600">local_shipping</span>
+              Доставка Новою Поштою
+            </span>
+            <b class="text-body-sm">від 80 ₴</b>
+          </div>
+          <div class="flex items-center justify-between px-space-md py-space-sm">
+            <span class="flex items-center gap-2 text-body-md">
+              <span class="material-symbols-outlined text-[18px] text-blue-600">electric_moped</span>
+              Експрес-кур'єр по Києву
+            </span>
+            <b class="text-body-sm">199 ₴</b>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-space-md text-body-sm text-on-surface-variant">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-emerald-600">verified_user</span> 100% оригінальний товар</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-emerald-600">assignment_return</span> 14 днів на повернення</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Комплект: разом дешевше -->
+    <section class="mt-space-xl rounded-xl bg-surface-container-low p-space-md">
+      <div class="mb-space-md flex flex-wrap items-center gap-space-sm">
+        <span class="badge bg-orange-500 text-white">ФІРМОВА ПРОПОЗИЦІЯ</span>
+        <h2 class="text-headline-md">Разом дешевше: Фірмовий комплект</h2>
+        <span class="ml-auto rounded-md bg-emerald-100 px-space-sm py-1 text-body-sm font-semibold text-emerald-700">
+          Економія на комплекті: 520 ₴
+        </span>
+      </div>
+      <div class="grid items-center gap-space-md lg:grid-cols-[1fr_auto]">
+        <div class="grid gap-space-sm sm:grid-cols-3">
+          <div class="card flex items-center gap-space-sm p-space-sm">
+            <span class="grid h-12 w-12 place-items-center rounded-md bg-slate-50 text-2xl">{p.emoji}</span>
+            <div class="min-w-0">
+              <p class="truncate text-body-sm font-semibold">Основний товар</p>
+              <p class="tabular text-body-sm font-bold">{new Intl.NumberFormat('uk-UA').format(p.price)} ₴</p>
+            </div>
+          </div>
+          <div class="card flex items-center gap-space-sm p-space-sm">
+            <span class="grid h-12 w-12 place-items-center rounded-md bg-slate-50 text-2xl">🛡️</span>
+            <div class="min-w-0">
+              <p class="truncate text-body-sm font-semibold">Захисне скло + чохол</p>
+              <p class="tabular text-body-sm font-bold">1 299 ₴</p>
+            </div>
+          </div>
+          <div class="card flex items-center gap-space-sm p-space-sm">
+            <span class="grid h-12 w-12 place-items-center rounded-md bg-slate-50 text-2xl">🔌</span>
+            <div class="min-w-0">
+              <p class="truncate text-body-sm font-semibold">Адаптер живлення 20W</p>
+              <p class="tabular text-body-sm font-bold">849 ₴</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-space-md rounded-lg bg-slate-900 p-space-md text-white lg:min-w-64">
+          <div>
+            <p class="text-caption text-slate-400">Все разом</p>
+            <p class="tabular text-price-display-lg">{new Intl.NumberFormat('uk-UA').format(p.price + 1299 + 849 - 520)} ₴</p>
+          </div>
+          <button type="button" data-add-to-cart={p.slug} class="btn-primary px-space-lg py-2.5 text-body-md">Купити комплект</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Таби -->
+    <div class="mt-space-xl grid gap-space-xl lg:grid-cols-[1fr_320px]">
+      <div class="min-w-0">
+        <div class="flex gap-space-xs overflow-x-auto border-b border-outline-variant" data-tabs>
+          {tabs.map(([id, label], i) => (
+            <button
+              type="button"
+              data-tab={id}
+              class:list={[
+                'whitespace-nowrap border-b-2 px-space-md py-space-sm text-body-md font-semibold transition',
+                i === 0 ? 'border-blue-600 text-blue-600' : 'border-transparent text-on-surface-variant hover:text-blue-600',
+              ]}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <!-- Характеристики -->
+        <div data-panel="specs" class="mt-space-md flex flex-col gap-space-lg">
+          {fullSpecs.map((group) => (
+            <div class="card overflow-hidden">
+              <h3 class="border-b border-outline-variant bg-slate-50 px-space-md py-space-sm text-caption font-bold uppercase tracking-wide text-slate-600">
+                {group.group}
+              </h3>
+              <table class="w-full text-body-sm">
+                <tbody>
+                  {group.rows.map(([k, v], i) => (
+                    <tr class:list={[i % 2 ? 'bg-slate-50/60' : 'bg-white']}>
+                      <td class="w-2/5 px-space-md py-2 text-slate-500">{k}</td>
+                      <td class="px-space-md py-2 font-medium text-on-surface">{v}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        <!-- Опис -->
+        <div data-panel="desc" class="mt-space-md hidden flex-col gap-space-md">
+          <div class="card p-space-md">
+            <p class="text-body-md leading-relaxed text-on-surface-variant">{p.desc}</p>
+            <p class="mt-space-sm text-body-md leading-relaxed text-on-surface-variant">
+              Купуйте {p.title} з офіційною гарантією виробника, доставкою Новою Поштою по всій Україні
+              та оплатою частинами 0%. Самовивіз із 48 магазинів «ТЕХНОПРОСТІР» — Київ, Львів, Дніпро, Одеса, Харків
+              та інші міста.
+            </p>
+          </div>
+        </div>
+
+        <!-- Відгуки -->
+        <div data-panel="reviews" id="reviews" class="mt-space-md hidden flex-col gap-space-md">
+          {[
+            ['Олексій Мельник', 5, 'Сьогодні, 14:45', 'Швидка доставка, все запаковано ідеально. Товар відповідає опису, працює бездоганно. Дякую за консультацію!'],
+            ['Ірина Коваль', 5, '18 лютого 2026', 'Купувала в магазині на Хрещатику — менеджер допоміг з вибором комплектації. Ціна виявилась найкращою в місті.'],
+            ['Андрій Бондар', 4, '12 лютого 2026', 'Все супер, єдине — кур’єр їхав довше обіцяного. За якість і сервіс ставлю чотири зірки, рекомендую.'],
+          ].map(([name, stars, date, text]) => (
+            <div class="card p-space-md">
+              <div class="mb-space-sm flex items-center justify-between">
+                <div class="flex items-center gap-space-sm">
+                  <span class="grid h-9 w-9 place-items-center rounded-full bg-blue-100 font-bold text-blue-700">{String(name).charAt(0)}</span>
+                  <div>
+                    <p class="text-body-md font-semibold">{name}</p>
+                    <p class="text-caption text-outline">{date}</p>
+                  </div>
+                </div>
+                <span class="text-amber-500">{'★'.repeat(Number(stars))}{'☆'.repeat(5 - Number(stars))}</span>
+              </div>
+              <p class="text-body-md text-on-surface-variant">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Аксесуари -->
+        <div data-panel="accessories" class="mt-space-md hidden">
+          <div class="grid gap-space-sm sm:grid-cols-3">
+            {[
+              ['🛡️', 'Захисне скло Ceramic Armor', '699 ₴'],
+              ['📱', 'Чохол-книжка Original Line', '899 ₴'],
+              ['🎧', 'Бездротові навушники TWS Air', '1 499 ₴'],
+            ].map(([emo, name, price]) => (
+              <a href="/catalog" class="card card-hover flex items-center gap-space-sm p-space-sm">
+                <span class="grid h-14 w-14 place-items-center rounded-md bg-slate-50 text-2xl">{emo}</span>
+                <div>
+                  <p class="text-body-sm font-semibold leading-tight">{name}</p>
+                  <p class="tabular text-body-sm font-bold text-blue-700">{price}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Питання -->
+        <div data-panel="qa" class="mt-space-md hidden flex-col gap-space-sm">
+          {[
+            ['Чи оригінальний товар і яка гарантія?', 'Так, товар офіційний, з гарантійним талоном виробника на 12–24 місяці залежно від категорії.'],
+            ['Як швидко доставлять замовлення?', 'Відправляємо в день замовлення до 18:00. По Україні — 1–2 дні, по Києву кур’єр може привезти сьогодні ж.'],
+            ['Чи можна оплатити частинами?', 'Так, доступне розтермінування 0% до 24 платежів (ПриватБанк, monobank, А-Банк) та оплата при отриманні.'],
+          ].map(([qText, aText]) => (
+            <details class="card group p-space-md">
+              <summary class="flex cursor-pointer items-center justify-between text-body-md font-semibold">
+                {qText}
+                <span class="material-symbols-outlined text-[18px] text-slate-400 group-open:rotate-180">expand_more</span>
+              </summary>
+              <p class="mt-space-sm text-body-md text-on-surface-variant">{aText}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      {/* Бічна колонка */}
+      <aside class="flex flex-col gap-space-md">
+        <div class="card p-space-md">
+          <p class="flex items-center gap-2 text-body-md font-bold">
+            <span class="material-symbols-outlined text-[20px] text-blue-600">shield</span>
+            Програма «ТехноЗахист Екстра»
+          </p>
+          <p class="mt-space-xs text-body-sm text-on-surface-variant">
+            Захист від сколів, вологи та падіння: безкоштовне відновлення екрана чи пристрою зі знижкою до 50%.
+          </p>
+          <label class="mt-space-sm flex cursor-pointer items-center gap-2 rounded-md bg-blue-50 px-space-sm py-2 text-body-sm font-semibold text-blue-700">
+            <input type="checkbox" class="h-4 w-4 accent-blue-600" />
+            + 3 499 ₴ · Додати захист на 2 роки
+          </label>
+        </div>
+
+        <div class="card p-space-md">
+          <span class="badge bg-blue-50 text-blue-700">Trade-in знижка</span>
+          <p class="mt-space-sm text-body-md font-bold">Обміняйте старий смартфон</p>
+          <p class="mt-space-xs text-body-sm text-on-surface-variant">
+            Знижка до <b>26 000 ₴</b> миттєво при обміні вашого пристрою на цей.
+          </p>
+          <a href="#" class="btn-primary mt-space-sm block py-2 text-center text-body-sm">Розрахувати вартість</a>
+        </div>
+
+        <div class="card p-space-md">
+          <p class="flex items-center gap-2 text-body-md font-bold">
+            <span class="material-symbols-outlined text-[20px] text-emerald-600">engineering</span>
+            Офіційний сервіс в Україні
+          </p>
+          <p class="mt-space-xs text-body-sm text-on-surface-variant">
+            Планове технічне обслуговування і гарантійний ремонт у сервісних центрах виробника.
+          </p>
+        </div>
+
+        <div class="card p-space-md text-body-sm text-on-surface-variant">
+          <p class="mb-space-xs flex items-center gap-2 font-semibold text-on-surface">
+            <span class="material-symbols-outlined text-[18px] text-blue-600">public</span> Оплата та доставка
+          </p>
+          Visa · Mastercard · Apple Pay · Google Pay · Приват24 · mono<br />
+          Нова Пошта · Укрпошта · Meest · кур'єр по Києву
+        </div>
+      </aside>
+    </div>
+
+    <!-- Схожі товари -->
+    {related.length > 0 && (
+      <section class="mt-space-2xl">
+        <h2 class="mb-space-md flex items-center gap-3 text-headline-lg tracking-tight">
+          <span class="h-6 w-1.5 rounded-full bg-blue-600"></span>Схожі товари
+        </h2>
+        <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-4">
+          {related.map((r) => <ProductCard product={r} variant="home" />)}
+        </div>
+      </section>
+    )}
+  </div>
+
+  <script>
+    // Таби
+    const tabBtns = document.querySelectorAll('[data-tab]');
+    const panels = document.querySelectorAll('[data-panel]');
+    tabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-tab');
+        tabBtns.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('border-blue-600', active);
+          b.classList.toggle('text-blue-600', active);
+          b.classList.toggle('border-transparent', !active);
+          b.classList.toggle('text-on-surface-variant', !active);
+        });
+        panels.forEach((pnl) => {
+          const active = pnl.getAttribute('data-panel') === id;
+          pnl.classList.toggle('hidden', !active);
+          if (active) pnl.classList.add('flex');
+        });
+      });
+    });
+
+    // Мініатюри
+    const thumbs = document.querySelectorAll('[data-thumb]');
+    thumbs.forEach((t) => {
+      t.addEventListener('click', () => {
+        thumbs.forEach((x) => {
+          x.classList.remove('border-blue-600');
+          x.classList.add('border-transparent');
+        });
+        t.classList.add('border-blue-600');
+        t.classList.remove('border-transparent');
+      });
+    });
+
+    // Колір / пам'ять / кількість
+    const colorLabel = document.querySelector('[data-color-label]');
+    document.querySelectorAll('[data-color]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-color]').forEach((b) => {
+          b.classList.remove('border-blue-600', 'ring-2', 'ring-blue-200');
+          b.classList.add('border-white');
+        });
+        btn.classList.add('border-blue-600', 'ring-2', 'ring-blue-200');
+        btn.classList.remove('border-white');
+        if (colorLabel) colorLabel.textContent = btn.getAttribute('data-color') ?? '';
+      });
+    });
+
+    document.querySelectorAll('[data-mem]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-mem]').forEach((b) => {
+          b.classList.remove('border-blue-600', 'bg-blue-600', 'text-white');
+          b.classList.add('border-slate-300', 'bg-white');
+        });
+        btn.classList.add('border-blue-600', 'bg-blue-600', 'text-white');
+        btn.classList.remove('border-slate-300', 'bg-white');
+      });
+    });
+
+    const qtyEl = document.querySelector('[data-qty-value]');
+    const buyBtn = document.querySelector('[data-buy-now]');
+    let qty = 1;
+    const setQty = (next) => {
+      qty = Math.max(1, Math.min(99, next));
+      if (qtyEl) qtyEl.textContent = String(qty);
+      if (buyBtn instanceof HTMLElement) buyBtn.setAttribute('data-qty', String(qty));
+    };
+    document.querySelector('[data-qty-minus]')?.addEventListener('click', () => setQty(qty - 1));
+    document.querySelector('[data-qty-plus]')?.addEventListener('click', () => setQty(qty + 1));
+
+    // «Купити» → одразу в кошик
+    buyBtn?.addEventListener('click', () => {
+      setTimeout(() => {
+        if (document.querySelector('#tp-toast-host a')) window.location.href = '/cart';
+      }, 400);
+    });
+  </script>
+</BaseLayout>

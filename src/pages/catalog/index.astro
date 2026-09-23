@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogView from '../../components/CatalogView.astro';
+import { products } from '../../data/products.js';
+---
+<BaseLayout
+  title="Каталог товарів — ТЕХНОПРОСТІР"
+  description="Каталог електроніки та побутової техніки: смартфони, ноутбуки, телевізори, комплектуючі, дрібна побутова техніка. Офіційна гарантія, доставка по Україні."
+>
+  <CatalogView
+    products={products}
+    title="Каталог товарів"
+    description="Повний асортимент ТЕХНОПРОСТІР: електроніка, комплектуючі та побутова техніка з офіційною гарантією, доставкою Новою Поштою і розтермінуванням 0%."
+    crumbs={[{ label: 'Головна', href: '/' }, { label: 'Каталог товарів' }]}
+  />
+</BaseLayout>

@@ -1,0 +1,306 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { bySlug } from '../data/products.js';
+
+const upsells = ['apple-airpods-pro-2', 'samsung-990-pro-2tb', 'ecoflow-river-3'].map(bySlug);
+---
+<BaseLayout
+  title="Кошик — ТЕХНОПРОСТІР"
+  description="Ваш кошик покупок у ТЕХНОПРОСТІР: перегляньте товари, застосуйте промокод та оформіть замовлення з доставкою по Україні."
+>
+  <div class="shell py-space-md">
+    <!-- Резерв ціни -->
+    <div class="card mb-space-sm flex flex-wrap items-center justify-between gap-space-sm px-space-md py-space-sm">
+      <p class="flex items-center gap-2 text-body-sm font-semibold text-emerald-600">
+        <span class="material-symbols-outlined text-[18px]">inventory</span>
+        Товари зарезервовано:
+        <span class="tabular" data-countdown-to-end-of-day data-countdown-label="">--:--:--</span>
+      </p>
+      <button type="button" class="btn-outline px-space-sm py-1.5 text-body-sm">Фіксація ціни</button>
+    </div>
+
+    <!-- Безкоштовна доставка -->
+    <div class="card mb-space-md p-space-md">
+      <div class="mb-space-xs flex items-center justify-between text-body-sm">
+        <span class="flex items-center gap-2 font-semibold">
+          <span class="material-symbols-outlined text-[18px] text-emerald-600">local_shipping</span>
+          Безкоштовна доставка
+        </span>
+        <span class="font-bold text-emerald-600">100% виконано</span>
+      </div>
+      <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+        <div class="h-full w-full rounded-full bg-emerald-500"></div>
+      </div>
+      <p class="mt-space-xs text-body-sm text-on-surface-variant">
+        Нова Пошта і самовивіз із магазинів безкоштовні для цього кошика
+      </p>
+    </div>
+
+    <div class="grid gap-space-xl lg:grid-cols-[1fr_360px]">
+      <div class="min-w-0">
+        <!-- Заголовок -->
+        <div class="mb-space-md flex flex-wrap items-center gap-space-md">
+          <h1 class="text-headline-lg tracking-tight">Кошик</h1>
+          <span class="badge bg-blue-50 text-blue-700"><span data-cart-count>0</span>&nbsp;товарів</span>
+          <label class="ml-auto flex cursor-pointer items-center gap-2 text-body-sm text-on-surface-variant">
+            <input type="checkbox" checked class="h-4.5 w-4.5 accent-blue-600" />
+            Вибрати все (<span data-cart-count>0</span>)
+          </label>
+        </div>
+
+        <!-- Позиції (рендерить cart.js) -->
+        <div class="flex flex-col gap-space-sm" data-cart-items></div>
+
+        <!-- Порожній кошик -->
+        <div class="card hidden flex-col items-center gap-space-md p-space-2xl text-center" data-cart-empty>
+          <span class="material-symbols-outlined text-5xl text-slate-300">shopping_cart</span>
+          <p class="text-headline-md">Кошик порожній</p>
+          <p class="max-w-sm text-body-md text-on-surface-variant">
+            Додайте товари з каталогу — і ми зарезервуємо ціни на 30 хвилин.
+          </p>
+          <a href="/catalog" class="btn-primary px-space-xl py-2.5 text-body-md">Перейти до каталогу</a>
+        </div>
+
+        <!-- Промокод -->
+        <div class="card mt-space-md p-space-md">
+          <p class="mb-space-sm flex items-center gap-2 text-body-md font-bold">
+            <span class="material-symbols-outlined text-[18px] text-blue-600">sell</span>
+            Промокод та знижки
+          </p>
+          <form class="flex flex-wrap gap-space-sm" data-promo-form>
+            <input type="text" class="input max-w-64 flex-1 py-2.5 text-body-md uppercase" placeholder="TECHNO2026" data-promo-input />
+            <button type="submit" class="btn-outline px-space-lg py-2.5 text-body-md font-semibold">Застосувати</button>
+          </form>
+          <p class="mt-space-sm hidden items-center gap-1 text-body-sm font-semibold text-emerald-600" data-promo-applied>
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            Знижка за промокодом TECHNO2026 застосована — <span class="tabular">-500 ₴</span>
+          </p>
+        </div>
+
+        <!-- Разом дешевше -->
+        <div class="mt-space-xl">
+          <div class="mb-space-sm flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-headline-md">
+              <span class="material-symbols-outlined text-[20px] text-orange-600">shopping_basket</span>
+              Разом дешевше
+            </h2>
+            <a href="/catalog" class="text-body-sm font-semibold text-blue-600 hover:underline">Спеції до замовлення →</a>
+          </div>
+          <div class="grid grid-cols-1 gap-space-sm sm:grid-cols-3">
+            {upsells.map((u) => <ProductCard product={u} variant="home" />)}
+          </div>
+        </div>
+
+        <!-- Доставка -->
+        <div class="card mt-space-md p-space-md">
+          <p class="mb-space-sm text-body-md font-bold">Способи доставки для цього замовлення</p>
+          <div class="flex flex-col gap-space-xs">
+            <label class="flex cursor-pointer items-center justify-between rounded-lg bg-blue-50/60 px-space-md py-space-sm text-body-sm">
+              <span class="flex items-center gap-2">
+                <input type="radio" name="delivery-preview" checked class="accent-blue-600" />
+                <span>
+                  <b>Самовивіз із 42 магазинів «Технопростір»</b><br />
+                  <span class="text-on-surface-variant">Київ, Львів, Дніпро, Одеса та ін.</span>
+                </span>
+              </span>
+              <b class="text-emerald-600">0 ₴ · сьогодні з 10:00</b>
+            </label>
+            <label class="flex cursor-pointer items-center justify-between rounded-lg bg-blue-50/60 px-space-md py-space-sm text-body-sm">
+              <span class="flex items-center gap-2">
+                <input type="radio" name="delivery-preview" class="accent-blue-600" />
+                <span>
+                  <b>У відділення або поштомат Нової Пошти</b><br />
+                  <span class="text-on-surface-variant">Відправимо сьогодні до 18:00</span>
+                </span>
+              </span>
+              <b class="text-emerald-600">0 ₴ · завтра з 09:00</b>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Підсумок -->
+      <aside class="lg:sticky lg:top-44 lg:h-fit">
+        <div class="card p-space-md">
+          <h2 class="mb-space-md text-headline-md">Разом до сплати</h2>
+          <dl class="flex flex-col gap-space-sm text-body-md">
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Вартість товарів (<span class="tabular" data-sum-count>0</span> шт)</dt>
+              <dd class="tabular font-semibold" data-sum-subtotal>0 ₴</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Знижка магазину</dt>
+              <dd class="tabular font-semibold text-emerald-600" data-sum-store>-0 ₴</dd>
+            </div>
+            <div class="flex justify-between" data-sum-promo-row hidden>
+              <dt class="text-on-surface-variant">Промокод TECHNO2026</dt>
+              <dd class="tabular font-semibold text-emerald-600" data-sum-promo>-0 ₴</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-on-surface-variant">Доставка (Нова Пошта)</dt>
+              <dd class="font-semibold text-emerald-600">Безкоштовно</dd>
+            </div>
+          </dl>
+
+          <div class="mt-space-md border-t border-outline-variant pt-space-md">
+            <div class="flex items-baseline justify-between">
+              <span class="text-body-md font-semibold">Фінальна сума</span>
+              <span class="tabular text-price-display-lg text-blue-700" data-sum-total>0 ₴</span>
+            </div>
+            <p class="mt-1 text-right text-caption text-outline">Всі ціни вже включають ПДВ 20%</p>
+          </div>
+
+          <a href="/checkout" class="btn-primary mt-space-md flex items-center justify-center gap-2 py-3.5 text-headline-sm" data-checkout-link>
+            Оформити замовлення <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </a>
+
+          <div class="mt-space-sm grid grid-cols-2 gap-space-sm">
+            <button type="button" class="btn-outline py-2.5 text-body-sm font-semibold" data-quick-order>⚡ Купити в 1 клік</button>
+            <button type="button" class="flex items-center justify-center gap-1 rounded-lg bg-slate-900 py-2.5 text-body-sm font-semibold text-white">
+              Apple Pay
+            </button>
+          </div>
+
+          <div class="mt-space-md grid grid-cols-3 gap-space-xs border-t border-outline-variant pt-space-md text-center text-[11px] text-on-surface-variant">
+            <div>
+              <span class="material-symbols-outlined text-[18px] text-emerald-600">verified</span>
+              <p>Офіційна техніка</p>
+              <p class="text-outline">UA/UA сертифіковано</p>
+            </div>
+            <div>
+              <span class="material-symbols-outlined text-[18px] text-emerald-600">autorenew</span>
+              <p>14 днів обмін</p>
+              <p class="text-outline">Без зайвих питань</p>
+            </div>
+            <div>
+              <span class="material-symbols-outlined text-[18px] text-emerald-600">lock</span>
+              <p>256-біт SSL</p>
+              <p class="text-outline">Безпечний платіж</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    import { cart, totals, formatPrice, getPromo, setPromo, PROMO_CODE, showToast } from '../scripts/cart.js';
+
+    const itemsHost = document.querySelector('[data-cart-items]');
+    const emptyHost = document.querySelector('[data-cart-empty]');
+    const fmt = formatPrice;
+
+    function rowTemplate(item) {
+      const old = item.oldPrice
+        ? `<span class="tabular text-specs-mono text-slate-400 line-through">${fmt(item.oldPrice)}</span>`
+        : '';
+      return `
+        <div class="card flex flex-wrap gap-space-md p-space-md" data-cart-row="${item.slug}">
+          <input type="checkbox" checked class="mt-1 h-4.5 w-4.5 shrink-0 accent-blue-600" aria-label="Вибрати" />
+          <a href="/product/${item.slug}" class="grid h-20 w-20 shrink-0 place-items-center rounded-lg bg-[#f8fafc] text-4xl">${item.emoji}</a>
+          <div class="min-w-0 flex-1">
+            <p class="tabular text-caption text-outline">Арт. ${item.slug.slice(0, 8).toUpperCase()}</p>
+            <a href="/product/${item.slug}" class="line-clamp-2 text-body-md font-semibold hover:text-blue-600">${item.title}</a>
+            <p class="mt-1 text-body-sm text-on-surface-variant">${item.short ?? ''}</p>
+            <p class="mt-1 flex items-center gap-1 text-body-sm text-emerald-600">
+              <span class="material-symbols-outlined text-[14px]">check_circle</span> В наявності
+            </p>
+          </div>
+          <div class="flex flex-col items-end justify-between gap-space-sm">
+            <button type="button" class="text-slate-400 hover:text-red-500" data-cart-remove="${item.slug}" aria-label="Видалити">
+              <span class="material-symbols-outlined text-[20px]">close</span>
+            </button>
+            <div class="flex items-center gap-space-sm">
+              <button type="button" class="grid h-8 w-8 place-items-center rounded-md border border-slate-300 text-slate-500 hover:border-blue-400" data-cart-dec="${item.slug}">−</button>
+              <span class="tabular w-6 text-center font-semibold">${item.qty}</span>
+              <button type="button" class="grid h-8 w-8 place-items-center rounded-md border border-slate-300 text-slate-500 hover:border-blue-400" data-cart-inc="${item.slug}">+</button>
+            </div>
+            <div class="flex items-baseline gap-space-xs">
+              ${old}
+              <span class="tabular text-price-display-md">${fmt(item.price * item.qty)}</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function render() {
+      const items = cart.items();
+      const t = totals();
+
+      if (itemsHost) {
+        itemsHost.innerHTML = items.map(rowTemplate).join('');
+        itemsHost.classList.toggle('hidden', items.length === 0);
+      }
+      emptyHost?.classList.toggle('hidden', items.length !== 0);
+      if (emptyHost instanceof HTMLElement) emptyHost.style.display = items.length === 0 ? 'flex' : '';
+
+      document.querySelectorAll('[data-cart-count]').forEach((el) => (el.textContent = String(t.count)));
+      const set = (sel, val) => {
+        const el = document.querySelector(sel);
+        if (el) el.textContent = val;
+      };
+      set('[data-sum-count]', String(t.count));
+      set('[data-sum-subtotal]', fmt(t.subtotal));
+      set('[data-sum-store]', `-${fmt(t.storeDiscount)}`);
+      set('[data-sum-promo]', `-${fmt(t.promo)}`);
+      set('[data-sum-total]', fmt(t.total));
+
+      const promoRow = document.querySelector('[data-sum-promo-row]');
+      promoRow?.classList.toggle('hidden', t.promo === 0);
+      const promoApplied = document.querySelector('[data-promo-applied]');
+      promoApplied?.classList.toggle('hidden', !getPromo());
+      if (promoApplied instanceof HTMLElement) promoApplied.style.display = getPromo() ? 'flex' : '';
+
+      const checkoutLink = document.querySelector('[data-checkout-link]');
+      checkoutLink?.classList.toggle('pointer-events-none', items.length === 0);
+      checkoutLink?.classList.toggle('opacity-50', items.length === 0);
+    }
+
+    itemsHost?.addEventListener('click', (e) => {
+      const t = e.target;
+      if (!(t instanceof Element)) return;
+      const inc = t.closest('[data-cart-inc]');
+      const dec = t.closest('[data-cart-dec]');
+      const rm = t.closest('[data-cart-remove]');
+      if (inc instanceof HTMLElement) {
+        const slug = inc.dataset.cartInc!;
+        const item = cart.items().find((i) => i.slug === slug);
+        cart.setQty(slug, (item?.qty ?? 1) + 1);
+      } else if (dec instanceof HTMLElement) {
+        const slug = dec.dataset.cartDec!;
+        const item = cart.items().find((i) => i.slug === slug);
+        cart.setQty(slug, (item?.qty ?? 1) - 1);
+      } else if (rm instanceof HTMLElement) {
+        cart.remove(rm.dataset.cartRemove!);
+      }
+    });
+
+    document.querySelector('[data-promo-form]')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.querySelector('[data-promo-input]');
+      const value = input instanceof HTMLInputElement ? input.value.trim().toUpperCase() : '';
+      if (value === PROMO_CODE) {
+        setPromo(true);
+        showToast('Промокод застосовано: -500 ₴');
+      } else if (value === '') {
+        setPromo(false);
+        showToast('Промокод скасовано');
+      } else {
+        showToast('Такого промокоду не існує');
+      }
+      render();
+    });
+
+    document.querySelector('[data-quick-order]')?.addEventListener('click', () => {
+      if (cart.count() === 0) {
+        showToast('Кошик порожній');
+        return;
+      }
+      window.location.href = '/checkout';
+    });
+
+    document.addEventListener('tp:cart-change', render);
+    render();
+  </script>
+</BaseLayout>

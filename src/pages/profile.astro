@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Особистий кабінет — ТЕХНОПРОСТІР"
+  description="Особистий кабінет ТЕХНОПРОСТІР: мої замовлення, профіль, адреси, бонусний рахунок ТехноБонус."
+>
+  <div class="shell py-space-md">
+    <!-- Профіль -->
+    <div class="card mb-space-md flex flex-wrap items-center gap-space-md p-space-md">
+      <span class="grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-blue-100 text-headline-md text-blue-700">ОМ</span>
+      <div>
+        <p class="flex items-center gap-space-sm text-headline-md">
+          Олексій Мельник
+          <span class="badge bg-blue-600 text-white">PRO</span>
+          <span class="material-symbols-outlined grid h-6 w-6 place-items-center rounded-full bg-blue-600 text-[14px] text-white">check</span>
+        </p>
+        <p class="text-body-sm text-on-surface-variant">+380 67 123 45 67</p>
+      </div>
+      <button type="button" class="btn-outline ml-auto px-space-md py-2 text-body-sm" aria-label="Налаштування">
+        <span class="material-symbols-outlined text-[18px]">settings</span>
+      </button>
+    </div>
+
+    <!-- Бонуси -->
+    <div class="mb-space-md flex flex-wrap items-center justify-between gap-space-md rounded-lg bg-blue-600 p-space-md text-white">
+      <div>
+        <p class="text-caption font-bold uppercase tracking-wide text-blue-100">Програма лояльності</p>
+        <p class="tabular text-headline-lg">2 450 ₴ <span class="text-body-md font-normal text-blue-100">ТехноБонус</span></p>
+      </div>
+      <a href="#" class="rounded-lg bg-white/15 px-space-md py-2 text-body-sm font-semibold hover:bg-white/25">Історія →</a>
+    </div>
+
+    <!-- Навігація кабінету -->
+    <div class="mb-space-md flex flex-wrap gap-space-sm">
+      <button type="button" class="btn-primary px-space-lg py-2.5 text-body-md">Мої замовлення (3)</button>
+      <a href="#" class="btn-outline px-space-lg py-2.5 text-body-md">Профіль та адреси</a>
+    </div>
+
+    <!-- Фільтри -->
+    <div class="card mb-space-md p-space-sm">
+      <div class="relative mb-space-sm">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-slate-400">search</span>
+        <input type="search" placeholder="Пошук за номером замовлення або товаром" class="input py-2 pl-9 text-body-sm" />
+      </div>
+      <div class="flex flex-wrap gap-space-xs">
+        <button type="button" class="chip is-active">Всі замовлення (3)</button>
+        <button type="button" class="chip">Активні (1)</button>
+        <button type="button" class="chip">Виконані (2)</button>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-space-md" data-profile-orders>
+      <!-- Останнє замовлення (з checkout) рендерить скрипт -->
+    </div>
+
+    <!-- Демо-замовлення -->
+    <div class="card p-space-md">
+      <div class="mb-space-sm flex flex-wrap items-center justify-between gap-space-sm">
+        <p class="text-body-md font-bold">№ ТП-2026-89412 · Сьогодні, 14:45</p>
+        <span class="flex items-center gap-space-sm">
+          <span class="badge bg-blue-50 text-blue-700">В дорозі</span>
+        </span>
+      </div>
+      <div class="mb-space-sm rounded-lg bg-surface-container-low p-space-sm text-body-sm">
+        <p class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-blue-600"></span>
+          <b>Нова Пошта — Відділення №45</b> · Прибуття: <b>завтра, 13:00</b>
+        </p>
+        <p class="mt-1 text-on-surface-variant">Київ, вул. Велика Васильківська, 72 (до 30 кг)</p>
+        <p class="mt-1 text-specs-mono text-slate-500">ТТН: 2045 0892 4120 33</p>
+      </div>
+      <div class="flex items-center justify-between border-t border-outline-variant pt-space-sm">
+        <span class="text-body-sm text-on-surface-variant">Сплачено Apple Pay</span>
+        <span class="tabular text-price-display-md">55 398 ₴</span>
+      </div>
+      <div class="mt-space-sm flex gap-space-sm">
+        <button type="button" class="btn-primary flex-1 py-2 text-body-sm">Відстежити</button>
+        <button type="button" class="btn-outline flex-1 py-2 text-body-sm">Деталі / Чек</button>
+      </div>
+    </div>
+
+    <div class="card p-space-md">
+      <div class="mb-space-sm flex flex-wrap items-center justify-between gap-space-sm">
+        <p class="text-body-md font-bold">№ ТП-2026-64108 · 18 лютого 2026</p>
+        <span class="badge bg-emerald-50 text-emerald-700">Отримано</span>
+      </div>
+      <p class="text-body-sm text-on-surface-variant">Самовивіз із магазину — ТРЦ Ocean Plaza, Київ</p>
+      <div class="mt-space-sm flex items-center justify-between border-t border-outline-variant pt-space-sm">
+        <span class="text-body-sm text-on-surface-variant">Навушники Sony WH-1000XM5 · 1 шт.</span>
+        <span class="tabular text-price-display-md">14 499 ₴</span>
+      </div>
+      <div class="mt-space-sm flex gap-space-sm">
+        <button type="button" class="btn-outline flex-1 py-2 text-body-sm">Повторити</button>
+        <button type="button" class="btn-outline flex-1 py-2 text-body-sm">Відгук</button>
+      </div>
+    </div>
+
+    <!-- Підтримка -->
+    <div class="card mt-space-md flex flex-wrap items-center gap-space-md bg-blue-50/50 p-space-md">
+      <span class="material-symbols-outlined text-3xl text-blue-600">support_agent</span>
+      <div class="min-w-60 flex-1">
+        <p class="text-body-md font-bold">Потрібна допомога із замовленням?</p>
+        <p class="text-body-sm text-on-surface-variant">Служба турботи ТЕХНОПРОСТІР працює щодня з 08:00 до 22:00.</p>
+      </div>
+      <a href="tel:0800300777" class="btn-outline bg-white px-space-md py-2 text-body-sm font-semibold">0 800 300 777</a>
+      <button type="button" class="btn-primary px-space-md py-2 text-body-sm">Чат підтримки</button>
+    </div>
+  </div>
+
+  <script>
+    import { formatPrice } from '../scripts/cart.js';
+
+    const raw = sessionStorage.getItem('tp_last_order');
+    const host = document.querySelector('[data-profile-orders]');
+
+    if (raw && host) {
+      const order = JSON.parse(raw) as Record<string, unknown>;
+      const created = new Date(String(order.createdAt));
+      const dateStr = created.toLocaleDateString('uk-UA', { day: '2-digit', month: 'long', year: 'numeric' });
+      const card = document.createElement('div');
+      card.className = 'card p-space-md';
+      card.innerHTML = `
+        <div class="mb-space-sm flex flex-wrap items-center justify-between gap-space-sm">
+          <p class="text-body-md font-bold">№ ${String(order.number)} · ${dateStr}</p>
+          <span class="badge bg-orange-50 text-orange-600">Нове</span>
+        </div>
+        <div class="mb-space-sm rounded-lg bg-surface-container-low p-space-sm text-body-sm">
+          <p class="flex items-center gap-2">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <b>${String(order.delivery)}</b> · ${String(order.city)} · Готуємо до відправлення
+          </p>
+          <p class="mt-1 text-on-surface-variant">Отримувач: ${String(order.name)}, ${String(order.phone)}</p>
+        </div>
+        <div class="flex items-center justify-between border-t border-outline-variant pt-space-sm">
+          <span class="text-body-sm text-on-surface-variant">${String(order.payment)} · ${String(order.count)} шт.</span>
+          <span class="tabular text-price-display-md">${formatPrice(Number(order.total))}</span>
+        </div>
+        <div class="mt-space-sm flex gap-space-sm">
+          <button type="button" class="btn-primary flex-1 py-2 text-body-sm">Відстежити</button>
+          <button type="button" class="btn-outline flex-1 py-2 text-body-sm">Деталі / Чек</button>
+        </div>`;
+      host.appendChild(card);
+    }
+  </script>
+</BaseLayout>
