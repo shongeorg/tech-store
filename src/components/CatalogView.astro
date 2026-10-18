@@ -1,17 +1,16 @@
 ---
 // Каталог/категорія: breadcrumbs, фільтри-сайдбар (Stitch: _3 desktop, _6 mobile drawer),
-// сортування, сітка товарів. Фільтрація — клієнтська (статичний сайт).
-import ProductCard from './ProductCard.astro';
-
+// сортування, сітка товарів. Товари тягнуться клієнтом з Laravel API (/api/v1/products),
+// фільтрування теж відбувається в API: brands[], stock, price_min/max, memory[], sort, page.
 const {
   products,
   title,
   description = '',
   crumbs = [],
   showTradeIn = false,
+  categorySlug = '',
 } = Astro.props;
 
-const total = products.length;
 const prices = products.map((p) => p.price);
 const priceMin = Math.floor(Math.min(...prices) / 1000) * 1000;
 const priceMax = Math.ceil(Math.max(...prices) / 1000) * 1000;
@@ -35,7 +34,7 @@ const sortOptions = [
 ];
 ---
 
-<div data-catalog-root>
+<div data-catalog-root data-category-slug={categorySlug}>
   <!-- Breadcrumbs -->
   <nav class="shell flex items-center gap-1 py-space-sm text-body-sm text-on-surface-variant" aria-label="Хлібні крихти">
     {crumbs.map((c, i) => (
@@ -52,7 +51,7 @@ const sortOptions = [
       <div>
         <h1 class="text-headline-xl tracking-tight text-on-surface">
           {title}
-          <span class="ml-2 text-body-md font-normal text-outline">{total} товарів</span>
+          <span class="ml-2 text-body-md font-normal text-outline" data-api-total-inline>товарів з API</span>
         </h1>
         {description && <p class="mt-1 max-w-4xl text-body-md text-on-surface-variant">{description}</p>}
       </div>
@@ -186,7 +185,7 @@ const sortOptions = [
             )}
 
             <button type="button" class="btn-primary w-full py-3 text-body-md lg:hidden" data-apply-count data-close-filters>
-              Показати <span data-shown-count>{total}</span> товарів
+              Показати <span data-shown-count>…</span> товарів
             </button>
           </div>
         </div>
@@ -208,7 +207,7 @@ const sortOptions = [
             </select>
           </label>
           <p class="text-body-sm text-on-surface-variant">
-            Показано <span class="tabular font-semibold text-on-surface" data-shown-count>{total}</span> із <span class="tabular">{total}</span> товарів
+            Показано <span class="tabular font-semibold text-on-surface" data-shown-count>…</span> із <span class="tabular" data-total-count>…</span> товарів з API
           </p>
           <div class="ml-auto hidden items-center gap-1 md:flex">
             <button type="button" class="grid h-8 w-8 place-items-center rounded-md bg-blue-600 text-white" aria-label="Сітка">
@@ -227,9 +226,31 @@ const sortOptions = [
           <button type="button" class="text-body-sm font-semibold text-blue-600 hover:underline" data-reset-filters>Очистити всі</button>
         </div>
 
-        <!-- Сітка -->
-        <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 xl:grid-cols-3" data-product-grid>
-          {products.map((p) => <ProductCard product={p} />)}
+        <!-- Сітка (товари тягнуться з Laravel API; до відповіді — скелетони) -->
+        <div
+          class="grid grid-cols-1 gap-space-md sm:grid-cols-2 xl:grid-cols-3"
+          data-product-grid
+        >
+          {Array.from({ length: 6 }).map(() => (
+            <div class="card flex flex-col gap-space-sm overflow-hidden p-0">
+              <div class="skeleton aspect-square w-full"></div>
+              <div class="flex flex-col gap-space-sm p-space-md">
+                <div class="skeleton h-4 w-1/3"></div>
+                <div class="skeleton h-5 w-3/4"></div>
+                <div class="skeleton h-7 w-2/5"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Помилка API -->
+        <div class="card hidden flex-col items-center gap-space-md p-space-2xl text-center" data-api-error>
+          <span class="material-symbols-outlined text-5xl text-red-300">cloud_off</span>
+          <p class="text-headline-md">API недоступний</p>
+          <p class="max-w-md text-body-md text-on-surface-variant">
+            Не вдалося завантажити товари з Laravel API. Перевірте, що сервер піднято, і спробуйте ще раз.
+          </p>
+          <button type="button" class="btn-primary px-6 py-2.5 text-body-md" data-api-retry>Спробувати ще раз</button>
         </div>
 
         <!-- Порожній стан -->
@@ -242,15 +263,18 @@ const sortOptions = [
           <button type="button" class="btn-primary px-6 py-2.5 text-body-md" data-reset-filters>Очистити фільтри</button>
         </div>
 
-        <!-- Пагінація -->
+        <!-- Пагінація поверх API -->
         <div class="mt-space-xl flex flex-col items-center gap-space-md" data-pagination>
-          <p class="text-body-sm text-on-surface-variant">Сторінка <span class="tabular font-semibold">1</span> із <span class="tabular">1</span> (<span class="tabular" data-shown-count>{total}</span> товарів на сторінці)</p>
+          <p class="text-body-sm text-on-surface-variant">
+            Сторінка <span class="tabular font-semibold text-on-surface" data-page-current>1</span>
+            із <span class="tabular" data-page-total>1</span>
+            (<span class="tabular" data-total-count>0</span> товарів у API)
+          </p>
           <div class="flex items-center gap-space-xs">
-            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-400" disabled>
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-400" data-page-prev disabled>
               <span class="material-symbols-outlined text-[18px]">chevron_left</span>
             </button>
-            <button type="button" class="grid h-9 w-9 place-items-center rounded-md bg-blue-600 font-semibold text-white">1</button>
-            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-600 hover:border-blue-400" disabled>
+            <button type="button" class="grid h-9 w-9 place-items-center rounded-md border border-slate-300 text-slate-600 hover:border-blue-400" data-page-next>
               <span class="material-symbols-outlined text-[18px]">chevron_right</span>
             </button>
           </div>
@@ -286,41 +310,154 @@ const sortOptions = [
 </div>
 
 <script>
-  function initCatalog(root) {
-    const grid = root.querySelector('[data-product-grid]');
-    if (!grid) return;
-    const cards = Array.from(grid.querySelectorAll('[data-product-card]'));
+  import {
+    apiGet,
+    cardHtml,
+    qs,
+    ensureApiStyles,
+    type ApiProduct,
+    type Paginated,
+  } from '../lib/api';
+
+  ensureApiStyles();
+
+  function initCatalog(root: HTMLElement): void {
+    const grid = root.querySelector('[data-product-grid]') as HTMLElement | null;
+    if (grid === null) return;
+
+    const categorySlug = root.dataset.categorySlug ?? '';
+    const perPage = 12;
 
     const panel = root.querySelector('[data-filters-panel]');
-    const brandChecks = Array.from(root.querySelectorAll('[data-filter-brand]'));
-    const stockOnly = root.querySelector('[data-filter-stock]');
-    const preorder = root.querySelector('[data-filter-preorder]');
-    const memButtons = Array.from(root.querySelectorAll('[data-filter-mem]'));
+    const brandChecks = Array.from(root.querySelectorAll<HTMLInputElement>('[data-filter-brand]'));
+    const stockOnly = root.querySelector<HTMLInputElement>('[data-filter-stock]');
+    const preorderEl = root.querySelector<HTMLInputElement>('[data-filter-preorder]');
+    const memButtons = Array.from(root.querySelectorAll<HTMLElement>('[data-filter-mem]'));
     const chipAll = root.querySelector('[data-chip-all]');
-    const chipBrands = Array.from(root.querySelectorAll('[data-chip-brand]'));
-    const minInput = root.querySelector('[data-price-min-input]');
-    const maxInput = root.querySelector('[data-price-max-input]');
-    const rangeMin = root.querySelector('[data-range-min]');
-    const rangeMax = root.querySelector('[data-range-max]');
-    const rangeFill = root.querySelector('[data-range-fill]');
-    const sortSelect = root.querySelector('[data-sort-select]');
-    const brandSearch = root.querySelector('[data-brand-search]');
+    const chipBrands = Array.from(root.querySelectorAll<HTMLElement>('[data-chip-brand]'));
+    const minInput = root.querySelector<HTMLInputElement>('[data-price-min-input]');
+    const maxInput = root.querySelector<HTMLInputElement>('[data-price-max-input]');
+    const rangeMin = root.querySelector<HTMLInputElement>('[data-range-min]');
+    const rangeMax = root.querySelector<HTMLInputElement>('[data-range-max]');
+    const rangeFill = root.querySelector<HTMLElement>('[data-range-fill]');
+    const sortSelect = root.querySelector<HTMLSelectElement>('[data-sort-select]');
+    const brandSearch = root.querySelector<HTMLInputElement>('[data-brand-search]');
     const activeChips = root.querySelector('[data-active-chips]');
     const activeList = root.querySelector('[data-active-chips-list]');
     const emptyState = root.querySelector('[data-empty-state]');
+    const apiError = root.querySelector('[data-api-error]');
+    const retryBtn = root.querySelector('[data-api-retry]');
     const pagination = root.querySelector('[data-pagination]');
-    const shownCounts = Array.from(root.querySelectorAll('[data-shown-count]'));
-    const filterCounts = Array.from(root.querySelectorAll('[data-filter-count]'));
+    const pageCurrent = root.querySelector('[data-page-current]');
+    const pageTotal = root.querySelector('[data-page-total]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-page-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-page-next]');
+    const shownCounts = Array.from(root.querySelectorAll<HTMLElement>('[data-shown-count]'));
+    const totalCounts = Array.from(root.querySelectorAll<HTMLElement>('[data-total-count]'));
+    const totalInline = root.querySelector('[data-api-total-inline]');
+    const filterCounts = Array.from(root.querySelectorAll<HTMLElement>('[data-filter-count]'));
 
-    const priceBounds = cards.map((c) => Number(c.dataset.price));
-    const pMin = Math.floor(Math.min(...priceBounds) / 1000) * 1000;
-    const pMax = Math.ceil(Math.max(...priceBounds) / 1000) * 1000;
+    // Межі ціни — з серверно відрендерених інпутів (meta з каталогу).
+    const pMin = Number(minInput?.min ?? 1000);
+    const pMax = Number(maxInput?.max ?? 100000);
 
-    const state = { brands: new Set(), mem: new Set(), stock: false, preorder: false, min: pMin, max: pMax, sort: 'pop' };
+    const state = {
+      brands: new Set<string>(),
+      mem: new Set<string>(),
+      stock: false,
+      preorder: false,
+      min: pMin,
+      max: pMax,
+      sort: 'pop',
+      page: 1,
+    };
 
-    const fmt = (n) => new Intl.NumberFormat('uk-UA').format(n);
+    let loading = false;
+    let debounce: number | undefined;
 
-    function syncRangeVisual() {
+    const fmt = (n: number): string => new Intl.NumberFormat('uk-UA').format(n);
+
+    function skeletonGrid(): void {
+      grid.innerHTML = Array.from(
+        { length: 6 },
+        () => `
+        <div class="card flex flex-col gap-space-sm overflow-hidden p-0">
+          <div class="skeleton aspect-square w-full"></div>
+          <div class="flex flex-col gap-space-sm p-space-md">
+            <div class="skeleton h-4 w-1/3"></div>
+            <div class="skeleton h-5 w-3/4"></div>
+            <div class="skeleton h-7 w-2/5"></div>
+          </div>
+        </div>`,
+      ).join('');
+    }
+
+    function scheduleApply(): void {
+      window.clearTimeout(debounce);
+      debounce = window.setTimeout(() => void apply(), 300);
+    }
+
+    async function apply(): Promise<void> {
+      if (loading || grid === null) return;
+      loading = true;
+      skeletonGrid();
+      apiError?.classList.add('hidden');
+
+      const params = {
+        category: categorySlug === '' ? undefined : categorySlug,
+        brands: [...state.brands],
+        memory: [...state.mem],
+        stock: state.stock && state.preorder ? '' : state.stock ? 'in' : state.preorder ? 'order' : '',
+        price_min: state.min > pMin ? state.min : undefined,
+        price_max: state.max < pMax ? state.max : undefined,
+        sort: state.sort,
+        page: state.page,
+        per_page: perPage,
+      };
+
+      try {
+        const res = await apiGet<Paginated<ApiProduct>>(`/products${qs(params)}`);
+        grid.innerHTML =
+          res.data.length === 0 ? '' : res.data.map((p) => cardHtml(p, 'grid')).join('');
+
+        shownCounts.forEach((el) => (el.textContent = String(res.data.length)));
+        totalCounts.forEach((el) => (el.textContent = String(res.meta.total)));
+        if (totalInline) totalInline.textContent = `${fmt(res.meta.total)} товарів з API`;
+
+        if (pageCurrent) pageCurrent.textContent = String(res.meta.current_page);
+        if (pageTotal) pageTotal.textContent = String(res.meta.last_page);
+        if (prevBtn) prevBtn.disabled = res.meta.current_page <= 1;
+        if (nextBtn) nextBtn.disabled = res.meta.current_page >= res.meta.last_page;
+
+        if (emptyState) {
+          emptyState.classList.toggle('hidden', res.data.length !== 0);
+          emptyState.style.display = res.data.length === 0 ? 'flex' : '';
+        }
+        if (pagination) {
+          pagination.classList.toggle('hidden', res.meta.total === 0);
+          pagination.style.display = res.meta.total === 0 ? 'none' : '';
+        }
+      } catch {
+        if (grid !== null) grid.innerHTML = '';
+        if (pagination) pagination.classList.add('hidden');
+        apiError?.classList.remove('hidden');
+      } finally {
+        loading = false;
+      }
+
+      const fCount = activeFilterCount();
+      filterCounts.forEach((el) => {
+        el.textContent = String(fCount);
+        el.classList.toggle('hidden', fCount === 0);
+      });
+      chipAll?.classList.toggle('is-active', state.brands.size === 0);
+      chipBrands.forEach((c) => c.classList.toggle('is-active', state.brands.has(c.dataset.chipBrand ?? '')));
+      memButtons.forEach((b) => b.classList.toggle('is-active', state.mem.has(b.dataset.filterMem ?? '')));
+      renderActiveChips();
+      syncRangeVisual();
+    }
+
+    function syncRangeVisual(): void {
       const span = pMax - pMin || 1;
       const left = ((state.min - pMin) / span) * 100;
       const right = ((state.max - pMin) / span) * 100;
@@ -328,20 +465,25 @@ const sortOptions = [
         rangeFill.style.left = left + '%';
         rangeFill.style.width = Math.max(0, right - left) + '%';
       }
-      if (minInput) minInput.value = state.min;
-      if (maxInput) maxInput.value = state.max;
-      if (rangeMin) rangeMin.value = state.min;
-      if (rangeMax) rangeMax.value = state.max;
+      if (minInput) minInput.value = String(state.min);
+      if (maxInput) maxInput.value = String(state.max);
+      if (rangeMin) rangeMin.value = String(state.min);
+      if (rangeMax) rangeMax.value = String(state.max);
     }
 
-    function activeFilterCount() {
-      return state.brands.size + state.mem.size + (state.stock ? 1 : 0) + (state.preorder ? 1 : 0)
-        + (state.min > pMin || state.max < pMax ? 1 : 0);
+    function activeFilterCount(): number {
+      return (
+        state.brands.size +
+        state.mem.size +
+        (state.stock ? 1 : 0) +
+        (state.preorder ? 1 : 0) +
+        (state.min > pMin || state.max < pMax ? 1 : 0)
+      );
     }
 
-    function renderActiveChips() {
-      if (!activeChips || !activeList) return;
-      const items = [];
+    function renderActiveChips(): void {
+      if (activeChips === null || activeList === null) return;
+      const items: Array<{ type: string; value: string; label: string }> = [];
       state.brands.forEach((b) => items.push({ type: 'brand', value: b, label: b }));
       state.mem.forEach((m) => items.push({ type: 'mem', value: m, label: m }));
       if (state.min > pMin || state.max < pMax) {
@@ -360,156 +502,138 @@ const sortOptions = [
         btn.addEventListener('click', () => {
           if (it.type === 'brand') toggleBrand(it.value, false);
           if (it.type === 'mem') toggleMem(it.value, false);
-          if (it.type === 'price') { state.min = pMin; state.max = pMax; }
-          if (it.type === 'stock') { state.stock = false; if (stockOnly) stockOnly.checked = false; }
-          if (it.type === 'preorder') { state.preorder = false; if (preorder) preorder.checked = false; }
-          apply();
+          if (it.type === 'price') {
+            state.min = pMin;
+            state.max = pMax;
+          }
+          if (it.type === 'stock') {
+            state.stock = false;
+            if (stockOnly) stockOnly.checked = false;
+          }
+          if (it.type === 'preorder') {
+            state.preorder = false;
+            if (preorderEl) preorderEl.checked = false;
+          }
+          void apply();
         });
         activeList.appendChild(btn);
       }
     }
 
-    function apply() {
-      let shown = 0;
-      for (const card of cards) {
-        const brand = card.dataset.brand;
-        const price = Number(card.dataset.price);
-        const stock = card.dataset.stock;
-        const mem = (card.dataset.mem || '').split('|').filter(Boolean);
-
-        const okBrand = state.brands.size === 0 || state.brands.has(brand);
-        const okPrice = price >= state.min && price <= state.max;
-        const stockFilters = (state.stock || state.preorder);
-        let okStock = true;
-        if (state.stock && state.preorder) okStock = true;
-        else if (state.stock) okStock = stock === 'in';
-        else if (state.preorder) okStock = stock === 'order';
-        const okStockFinal = stockFilters ? okStock : true;
-        const okMem = state.mem.size === 0 || [...state.mem].some((m) => mem.includes(m));
-
-        const visible = okBrand && okPrice && okStockFinal && okMem;
-        card.classList.toggle('hidden', !visible);
-        if (visible) shown += 1;
-      }
-
-      shownCounts.forEach((el) => (el.textContent = String(shown)));
-      const fCount = activeFilterCount();
-      filterCounts.forEach((el) => {
-        el.textContent = String(fCount);
-        el.classList.toggle('hidden', fCount === 0);
-      });
-      if (emptyState) {
-        emptyState.classList.toggle('hidden', shown !== 0);
-        emptyState.style.display = shown === 0 ? 'flex' : '';
-      }
-      if (pagination) pagination.classList.toggle('hidden', shown === 0);
-      chipAll?.classList.toggle('is-active', state.brands.size === 0);
-      chipBrands.forEach((c) => c.classList.toggle('is-active', state.brands.has(c.dataset.chipBrand)));
-      memButtons.forEach((b) => b.classList.toggle('is-active', state.mem.has(b.dataset.filterMem)));
-      renderActiveChips();
-      syncRangeVisual();
-    }
-
-    function toggleBrand(brand, on) {
+    function toggleBrand(brand: string, on?: boolean): void {
       if (on === undefined) on = !state.brands.has(brand);
+      state.page = 1;
       if (on) state.brands.add(brand);
       else state.brands.delete(brand);
       const check = brandChecks.find((c) => c.value === brand);
       if (check) check.checked = state.brands.has(brand);
     }
 
-    function toggleMem(mem, on) {
+    function toggleMem(mem: string, on?: boolean): void {
       if (on === undefined) on = !state.mem.has(mem);
+      state.page = 1;
       if (on) state.mem.add(mem);
       else state.mem.delete(mem);
     }
 
-    function resetAll() {
+    function resetAll(): void {
       state.brands.clear();
       state.mem.clear();
       state.stock = false;
       state.preorder = false;
       state.min = pMin;
       state.max = pMax;
+      state.page = 1;
       brandChecks.forEach((c) => (c.checked = false));
       memButtons.forEach((b) => b.classList.remove('is-active'));
       if (stockOnly) stockOnly.checked = false;
-      if (preorder) preorder.checked = false;
-      apply();
-    }
-
-    function sortCards(mode) {
-      const cmp = {
-        pop: () => 0,
-        rating: (a, b) => Number(b.dataset.rating) - Number(a.dataset.rating),
-        'price-asc': (a, b) => Number(a.dataset.price) - Number(b.dataset.price),
-        'price-desc': (a, b) => Number(b.dataset.price) - Number(a.dataset.price),
-        new: (a, b) => Number(b.dataset.new) - Number(a.dataset.new),
-        discount: (a, b) => Number(b.dataset.discount) - Number(a.dataset.discount),
-      }[mode];
-      [...cards].sort(cmp).forEach((c) => grid.appendChild(c));
+      if (preorderEl) preorderEl.checked = false;
+      void apply();
     }
 
     // --- Події ---
     brandChecks.forEach((c) =>
       c.addEventListener('change', () => {
         toggleBrand(c.value, c.checked);
-        apply();
+        void apply();
       }),
     );
-    stockOnly?.addEventListener('change', () => { state.stock = stockOnly.checked; apply(); });
-    preorder?.addEventListener('change', () => { state.preorder = preorder.checked; apply(); });
+    stockOnly?.addEventListener('change', () => {
+      state.stock = stockOnly.checked;
+      state.page = 1;
+      void apply();
+    });
+    preorderEl?.addEventListener('change', () => {
+      state.preorder = preorderEl.checked;
+      state.page = 1;
+      void apply();
+    });
     memButtons.forEach((b) =>
       b.addEventListener('click', () => {
-        toggleMem(b.dataset.filterMem);
-        apply();
+        toggleMem(b.dataset.filterMem ?? '');
+        void apply();
       }),
     );
     chipBrands.forEach((c) =>
       c.addEventListener('click', () => {
-        toggleBrand(c.dataset.chipBrand);
-        apply();
+        toggleBrand(c.dataset.chipBrand ?? '');
+        void apply();
       }),
     );
     chipAll?.addEventListener('click', () => {
       state.brands.clear();
+      state.page = 1;
       brandChecks.forEach((c) => (c.checked = false));
-      apply();
+      void apply();
     });
 
-    const clamp = (v) => Math.min(pMax, Math.max(pMin, v));
+    const clamp = (v: number): number => Math.min(pMax, Math.max(pMin, v));
     minInput?.addEventListener('input', () => {
       state.min = clamp(Number(minInput.value) || pMin);
       if (state.min > state.max) state.max = state.min;
-      apply();
+      scheduleApply();
     });
     maxInput?.addEventListener('input', () => {
       state.max = clamp(Number(maxInput.value) || pMax);
       if (state.max < state.min) state.min = state.max;
-      apply();
+      scheduleApply();
     });
     rangeMin?.addEventListener('input', () => {
       state.min = Math.min(Number(rangeMin.value), state.max);
-      apply();
+      scheduleApply();
     });
     rangeMax?.addEventListener('input', () => {
       state.max = Math.max(Number(rangeMax.value), state.min);
-      apply();
+      scheduleApply();
     });
 
     sortSelect?.addEventListener('change', () => {
       state.sort = sortSelect.value;
-      sortCards(state.sort);
+      state.page = 1;
+      void apply();
     });
 
     brandSearch?.addEventListener('input', () => {
       const q = brandSearch.value.trim().toLowerCase();
       root.querySelectorAll('[data-brand-row]').forEach((row) => {
-        row.classList.toggle('hidden', q !== '' && !row.dataset.brandRow.includes(q));
+        row.classList.toggle('hidden', q !== '' && !(row.dataset.brandRow ?? '').includes(q));
       });
     });
 
     root.querySelectorAll('[data-reset-filters]').forEach((b) => b.addEventListener('click', resetAll));
+    retryBtn?.addEventListener('click', () => void apply());
+
+    prevBtn?.addEventListener('click', () => {
+      if (state.page <= 1) return;
+      state.page -= 1;
+      void apply();
+      window.scrollTo({ top: root.offsetTop, behavior: 'smooth' });
+    });
+    nextBtn?.addEventListener('click', () => {
+      state.page += 1;
+      void apply();
+      window.scrollTo({ top: root.offsetTop, behavior: 'smooth' });
+    });
 
     // Mobile drawer
     const openBtn = root.querySelector('[data-open-filters]');
@@ -517,8 +641,22 @@ const sortOptions = [
     openBtn?.addEventListener('click', () => panel?.classList.add('is-open'));
     closeBtns.forEach((b) => b.addEventListener('click', () => panel?.classList.remove('is-open')));
 
-    apply();
+    void apply();
   }
 
-  document.querySelectorAll('[data-catalog-root]').forEach(initCatalog);
+  document.querySelectorAll<HTMLElement>('[data-catalog-root]').forEach(initCatalog);
 </script>
+
+<style is:global>
+  .skeleton {
+    display: inline-block;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #eef1f6 25%, #f6f8fb 50%, #eef1f6 75%);
+    background-size: 200% 100%;
+    animation: tp-skeleton 1.2s ease-in-out infinite;
+  }
+  @keyframes tp-skeleton {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+</style>

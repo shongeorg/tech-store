@@ -126,8 +126,8 @@ const tabs = [
           <div class="mt-space-sm flex flex-wrap items-center gap-space-md">
             <span class="flex items-center gap-1 text-body-md">
               <span class="text-amber-500">★★★★★</span>
-              <b>{p.rating.toFixed(1)}</b>
-              <span class="text-outline">• {p.reviews} відгуків</span>
+              <b data-rating>{p.rating.toFixed(1)}</b>
+              <span class="text-outline" data-reviews>• {p.reviews} відгуків</span>
             </span>
             <a href="#reviews" class="text-body-sm text-blue-600 hover:underline">Залишити відгук</a>
             <span class="flex items-center gap-1 text-body-sm text-emerald-600">
@@ -139,17 +139,17 @@ const tabs = [
         <!-- Ціна -->
         <div class="card bg-blue-50/60 p-space-md">
           <div class="flex flex-wrap items-baseline gap-space-sm">
-            <span class="tabular text-[32px] font-extrabold leading-none text-on-surface">
+            <span class="tabular text-[32px] font-extrabold leading-none text-on-surface" data-price>
               {new Intl.NumberFormat('uk-UA').format(p.price)} ₴
             </span>
             {p.oldPrice && (
-              <span class="tabular text-body-md text-slate-500 line-through">
+              <span class="tabular text-body-md text-slate-500 line-through" data-price-old>
                 {new Intl.NumberFormat('uk-UA').format(p.oldPrice)} ₴
               </span>
             )}
             {discount > 0 && <span class="badge badge-action">-{discount}%</span>}
             {p.oldPrice && (
-              <span class="text-body-sm font-semibold text-emerald-600">
+              <span class="text-body-sm font-semibold text-emerald-600" data-price-save>
                 Економія {new Intl.NumberFormat('uk-UA').format(p.oldPrice - p.price)} ₴
               </span>
             )}
@@ -358,8 +358,8 @@ const tabs = [
         <!-- Опис -->
         <div data-panel="desc" class="mt-space-md hidden flex-col gap-space-md">
           <div class="card p-space-md">
-            <p class="text-body-md leading-relaxed text-on-surface-variant">{p.desc}</p>
-            <p class="mt-space-sm text-body-md leading-relaxed text-on-surface-variant">
+            <p class="mt-space-sm text-body-md leading-relaxed text-on-surface-variant">{p.desc}</p>
+            <p class="mt-space-sm text-body-md leading-relaxed text-on-surface-variant" data-api-desc>
               Купуйте {p.title} з офіційною гарантією виробника, доставкою Новою Поштою по всій Україні
               та оплатою частинами 0%. Самовивіз із 48 магазинів «ТЕХНОПРОСТІР» — Київ, Львів, Дніпро, Одеса, Харків
               та інші міста.
@@ -478,7 +478,7 @@ const tabs = [
         <h2 class="mb-space-md flex items-center gap-3 text-headline-lg tracking-tight">
           <span class="h-6 w-1.5 rounded-full bg-blue-600"></span>Схожі товари
         </h2>
-        <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-4" data-api-related data-category={p.category}>
           {related.map((r) => <ProductCard product={r} variant="home" />)}
         </div>
       </section>
@@ -562,5 +562,87 @@ const tabs = [
         if (document.querySelector('#tp-toast-host a')) window.location.href = '/cart';
       }, 400);
     });
+  </script>
+
+  <script>
+    // Гідратація «реальними даними» з Laravel API: фото, ціни, рейтинг, наявність,
+    // опис і «Схожі товари». Статична верстка лишається fallback'ом (SEO + миттєвий пейнт).
+    import {
+      apiGet,
+      cardHtml,
+      money,
+      qs,
+      ensureApiStyles,
+      type ApiProduct,
+      type ApiProductDetail,
+      type Paginated,
+    } from '../../lib/api';
+
+    ensureApiStyles();
+
+    const slug = window.location.pathname.split('/product/')[1]?.split(/[?#]/)[0] ?? '';
+
+    if (slug !== '') {
+      void apiGet<{ data: ApiProductDetail }>(`/products/${slug}`)
+        .then((res) => {
+          const p = res.data;
+          // Головне фото + мініатюри з реальних Unsplash-зображень.
+          const first = p.images[0];
+          const media = document.querySelector<HTMLElement>('[data-main-image]');
+          if (media && first) {
+            const img = document.createElement('img');
+            img.src = first;
+            img.alt = p.title;
+            img.className = 'h-full w-full object-contain';
+            media.replaceWith(img);
+          }
+          const thumbs = document.querySelectorAll<HTMLElement>('[data-thumb]');
+          thumbs.forEach((t, i) => {
+            const src = p.images[i];
+            if (!src) return;
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            img.loading = 'lazy';
+            img.className = 'h-full w-full rounded-md object-cover';
+            t.replaceChildren(img);
+          });
+
+          const rating = document.querySelector('[data-rating]');
+          if (rating) rating.textContent = p.rating.toFixed(1);
+          const reviews = document.querySelector('[data-reviews]');
+          if (reviews) reviews.textContent = `• ${p.reviews_count} відгуків`;
+
+          const price = document.querySelector('[data-price]');
+          if (price) price.textContent = money(p.price);
+          const priceOld = document.querySelector('[data-price-old]');
+          if (priceOld && p.old_price) priceOld.textContent = money(p.old_price);
+          const priceSave = document.querySelector('[data-price-save]');
+          if (priceSave && p.old_price) {
+            priceSave.textContent = `Економія ${money(p.old_price - p.price)}`;
+          }
+          const stockLine = document.querySelector('[data-stock-line]');
+          if (stockLine) stockLine.textContent = p.stock_text;
+
+          const desc = document.querySelector('[data-api-desc]');
+          if (desc && p.description) desc.textContent = p.description;
+        })
+        .catch(() => {
+          /* статична версія лишається як є */
+        });
+
+      // Схожі товари із тієї ж категорії (з API).
+      const related = document.querySelector<HTMLElement>('[data-api-related]');
+      const category = related?.dataset.category ?? '';
+      void apiGet<Paginated<ApiProduct>>(`/products${qs({ category, per_page: 5 })}`)
+        .then((res) => {
+          if (!related) return;
+          const items = res.data.filter((x) => x.slug !== slug).slice(0, 4);
+          if (items.length > 0) related.innerHTML = items.map((r) => cardHtml(r, 'home')).join('');
+        })
+        .catch(() => {
+          /* лишається статичний блок */
+        });
+    }
   </script>
 </BaseLayout>

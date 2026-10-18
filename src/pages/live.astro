@@ -1,0 +1,373 @@
+---
+// «Живий катало́г» — витягує всі дані з Laravel JSON API (/api/v1/*) на клієнті.
+// Astro віддає статичний HTML (скелетони), гідратація даними — миттєвий fetch.
+// Так бачимо швидкість Astro = чистий CDN + API без API-сервера на фронті.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const apiBase = import.meta.env.PUBLIC_API_BASE ?? 'http://tech-server.test/api/v1';
+---
+
+<BaseLayout title="Живий каталог · Laravel API — ТЕХНОПРОСТІР" description="Каталог товарів, який тягується з Laravel API: фільтри, сортування та пагінація без статичної генерації.">
+  <main class="shell pt-space-lg pb-space-2xl">
+    <!-- ============ Hero ============ -->
+    <section class="card p-space-xl">
+      <div class="flex flex-wrap items-center gap-space-xs">
+        <span class="badge badge-new">LIVE API</span>
+        <span class="badge bg-slate-100 text-slate-600 font-mono">{apiBase}</span>
+        <span id="api-latency" class="badge bg-blue-50 text-blue-700 font-mono">API: —</span>
+      </div>
+      <h1 class="mt-space-sm text-display-hero-mobile tracking-tight text-on-surface lg:text-display-xl">
+        Живий каталог з <span class="text-blue-600">Laravel API</span>
+      </h1>
+      <p class="mt-space-xs max-w-2xl text-body-lg text-on-surface-variant">
+        Ця сторінка Astro — статика. Товари, категорії й статистика тягнуться з Laravel
+        на клієнті: фільтри, пошук, сортування та пагінація поверх JSON.
+      </p>
+      <dl id="api-stats" class="mt-space-md grid grid-cols-2 gap-space-sm sm:grid-cols-4">
+        <div class="rounded-lg bg-slate-50 px-space-md py-space-sm">
+          <dt class="text-caption text-outline uppercase tracking-wide">Товарів</dt>
+          <dd class="tabular text-headline-md font-bold"><span class="skeleton">—</span></dd>
+        </div>
+        <div class="rounded-lg bg-slate-50 px-space-md py-space-sm">
+          <dt class="text-caption text-outline uppercase tracking-wide">В наявності</dt>
+          <dd class="tabular text-headline-md font-bold"><span class="skeleton">—</span></dd>
+        </div>
+        <div class="rounded-lg bg-slate-50 px-space-md py-space-sm">
+          <dt class="text-caption text-outline uppercase tracking-wide">Категорій</dt>
+          <dd class="tabular text-headline-md font-bold"><span class="skeleton">—</span></dd>
+        </div>
+        <div class="rounded-lg bg-slate-50 px-space-md py-space-sm">
+          <dt class="text-caption text-outline uppercase tracking-wide">Ціни, ₴</dt>
+          <dd class="tabular text-headline-md font-bold"><span class="skeleton">—</span></dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ============ Toolbar ============ -->
+    <section class="mt-space-lg flex flex-col gap-space-md">
+      <div class="flex flex-wrap items-center gap-2" id="category-chips">
+        <!-- чіпи категорій рендеряться з API -->
+      </div>
+      <div class="grid gap-space-md sm:grid-cols-[1fr_240px]">
+        <label class="relative block">
+          <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-slate-400">search</span>
+          <input id="api-search" type="search" placeholder="Пошук серед товарів API…" class="input h-11 pl-10 pr-3 text-body-md" />
+        </label>
+        <select id="api-sort" class="input h-11 text-body-md" aria-label="Сортування">
+          <option value="pop">За популярністю</option>
+          <option value="rating">За рейтингом</option>
+          <option value="price-asc">Від дешевих до дорогих</option>
+          <option value="price-desc">Від дорогих до дешевих</option>
+          <option value="new">Спочатку новинки</option>
+          <option value="discount">За розміром знижки</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ============ Grid ============ -->
+    <section class="mt-space-lg">
+      <div class="mb-space-sm flex items-center justify-between text-body-sm text-on-surface-variant">
+        <p id="api-shown"></p>
+        <p id="api-page-label" class="tabular"></p>
+      </div>
+
+      <div id="api-grid" class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* 8 скелетон-карток до першого ответу API */}
+        {Array.from({ length: 8 }).map(() => (
+          <div class="card flex flex-col gap-space-sm overflow-hidden p-0">
+            <div class="skeleton aspect-square w-full"></div>
+            <div class="flex flex-col gap-space-sm p-space-md">
+              <div class="skeleton h-4 w-1/3"></div>
+              <div class="skeleton h-5 w-3/4"></div>
+              <div class="skeleton h-7 w-2/5"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div id="api-error" class="card mt-space-md hidden p-space-lg text-body-md text-red-600">
+        <span class="material-symbols-outlined align-middle">error</span>
+        Не вдалося загрузити дані з API. Спробуйте ще раз.
+      </div>
+
+      <div class="mt-space-lg flex justify-center gap-space-md">
+        <button id="api-prev" type="button" class="btn-secondary px-space-lg py-2.5" disabled>
+          <span class="material-symbols-outlined text-[18px]">chevron_left</span> Назад
+        </button>
+        <button id="api-next" type="button" class="btn-primary px-space-lg py-2.5">
+          Далі <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Product modal ============ -->
+  <dialog id="api-detail" class="max-h-[90vh] w-[min(880px,92vw)] rounded-xl bg-transparent p-0 backdrop:bg-slate-900/60">
+    <div id="api-detail-body" class="card divide-y divide-outline-variant overflow-auto p-0"></div>
+  </dialog>
+</BaseLayout>
+
+<script>
+  const API =
+    (import.meta.env.PUBLIC_API_BASE as string | undefined) ?? 'http://tech-server.test/api/v1';
+
+  const fmt = new Intl.NumberFormat('uk-UA');
+  const price = (v: number) => `${fmt.format(v)} ₴`;
+
+  const grid = document.getElementById('api-grid')!;
+  const chips = document.getElementById('category-chips')!;
+  const shown = document.getElementById('api-shown')!;
+  const pageLabel = document.getElementById('api-page-label')!;
+  const errorBox = document.getElementById('api-error')!;
+  const searchInput = document.getElementById('api-search') as HTMLInputElement;
+  const sortSelect = document.getElementById('api-sort') as HTMLSelectElement;
+  const prevBtn = document.getElementById('api-prev') as HTMLButtonElement;
+  const nextBtn = document.getElementById('api-next') as HTMLButtonElement;
+  const latencyBadge = document.getElementById('api-latency')!;
+  const dialog = document.getElementById('api-detail') as HTMLDialogElement;
+  const dialogBody = document.getElementById('api-detail-body')!;
+
+  const state = { category: '', sort: 'pop', q: '', page: 1, lastPage: 1, total: 0 };
+  let searchTimer: number | undefined;
+
+  async function api<T>(path: string): Promise<T> {
+    const started = performance.now();
+    const res = await fetch(`${API}${path}`, { headers: { Accept: 'application/json' } });
+    const ms = Math.round(performance.now() - started);
+    latencyBadge.textContent = `API: ${ms} мс`;
+    if (!res.ok) throw new Error(`${res.status}`);
+    return (await res.json()) as T;
+  }
+
+  function skeleton(count: number): void {
+    grid.innerHTML = Array.from({ length: count }, () => `
+      <div class="card flex flex-col gap-space-sm overflow-hidden p-0">
+        <div class="skeleton aspect-square w-full"></div>
+        <div class="flex flex-col gap-space-sm p-space-md">
+          <div class="skeleton h-4 w-1/3"></div>
+          <div class="skeleton h-5 w-3/4"></div>
+          <div class="skeleton h-7 w-2/5"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function loadStats(): Promise<void> {
+    const stats = await api<{ products: number; in_stock: number; categories: number; min_price: number; max_price: number }>('/stats');
+    const cells = document.querySelectorAll('#api-stats dd');
+    cells[0].innerHTML = String(stats.products);
+    cells[1].innerHTML = String(stats.in_stock);
+    cells[2].innerHTML = String(stats.categories);
+    cells[3].innerHTML = `${fmt.format(stats.min_price)}–${fmt.format(stats.max_price)}`;
+  }
+
+  async function loadCategories(): Promise<void> {
+    const res = await api<{ data: Array<{ slug: string; name: string; emoji: string; products_count: number }> }>('/categories');
+    chips.innerHTML = [
+      chipHtml('', 'Всі', 'grid_view', true),
+      ...res.data.map((c) => chipHtml(c.slug, `${c.name} ${c.products_count}`, c.emoji, false)),
+    ].join('');
+  }
+
+  function chipHtml(value: string, label: string, emoji: string, active: boolean): string {
+    return `<button type="button" data-cat="${value}"
+      class="chip flex items-center gap-1 ${active ? 'chip-active' : ''}">
+      ${emoji ? `<span aria-hidden="true">${emoji}</span>` : ''}${label}</button>`;
+  }
+
+  function cardHtml(p: apiProduct): string {
+    const badge = p.badge ? `<span class="badge badge-${p.badge_kind ?? 'muted'}">${p.badge}</span>` : '';
+    const discount = p.discount > 0 ? `<span class="badge badge-action">-${p.discount}%</span>` : '';
+    const specRows = p.specs.slice(0, 3).map(
+      ([k, v]) => `<div class="flex justify-between gap-2"><dt class="text-slate-500">${k}:</dt><dd class="truncate font-medium text-on-surface">${v}</dd></div>`,
+    ).join('');
+    const img = p.image
+      ? `<img src="${p.image}" alt="${p.title}" loading="lazy" class="h-full w-full object-cover" />`
+      : `<span class="grid h-full place-items-center text-6xl">${p.emoji}</span>`;
+
+    return `
+      <article class="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest transition hover:border-slate-300 hover:shadow-[0_4px_12px_-2px_rgba(15,23,42,0.08)]" data-slug="${p.slug}">
+        <div class="absolute left-2 top-2 z-10 flex flex-col items-start gap-1">${badge}${discount}</div>
+        <div class="aspect-square bg-[#f8fafc] p-3">${img}</div>
+        <div class="flex flex-1 flex-col gap-space-sm p-space-md">
+          <div class="flex items-center justify-between text-specs-mono text-slate-400">
+            <span>Артикул: ${p.sku ?? '—'}</span>
+            <span class="text-amber-500">★ <b>${p.rating.toFixed(1)}</b></span>
+          </div>
+          <a class="line-clamp-2 min-h-10 text-body-md font-semibold leading-5 text-on-surface hover:text-blue-600">${p.title}</a>
+          <dl class="hidden flex-col gap-1 text-body-sm text-on-surface-variant md:flex">${specRows}</dl>
+          <p class="flex items-start gap-1 text-[12px] leading-4 text-tertiary">
+            <span class="material-symbols-outlined mt-px text-[14px]">local_shipping</span>${p.stock_text}</p>
+          <div class="mt-auto flex items-baseline justify-between">
+            <div>
+              ${p.old_price ? `<p class="text-[11px] leading-4 text-tertiary line-through">${price(p.old_price)}</p>` : ''}
+              <p class="tabular text-headline-md font-extrabold text-blue-700">${price(p.price)}</p>
+            </div>
+            <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-600 text-white transition group-hover:scale-105">
+              <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+            </span>
+          </div>
+        </div>
+      </article>`;
+  }
+
+  interface apiProduct {
+    slug: string; title: string; brand: string; price: number; old_price: number | null; discount: number;
+    rating: number; badge: string | null; badge_kind: string | null; sku: string | null; stock_text: string;
+    emoji: string; image: string | null; installment: string | null; specs: [string, string][];
+  }
+
+  interface RawDetail {
+    slug: string;
+    title: string;
+    brand: string;
+    price: number;
+    old_price: number | null;
+    rating: number;
+    reviews_count: number;
+    description: string | null;
+    short: string | null;
+    image: string | null;
+    images: string[];
+    emoji: string;
+    specs: [string, string][];
+    full_specs: [string, string][];
+    colors: Array<{ name: string; hex: string }>;
+    memory: string[];
+    sku: string | null;
+    category: { name: string | null };
+  }
+
+  async function loadProducts(): Promise<void> {
+    skeleton(8);
+    errorBox.classList.add('hidden');
+    const params = new URLSearchParams();
+    if (state.category) params.set('category', state.category);
+    if (state.q) params.set('q', state.q);
+    params.set('sort', state.sort);
+    params.set('page', String(state.page));
+
+    try {
+      const res = await api<{ data: apiProduct[]; meta: { current_page: number; last_page: number; total: number } }>(`/products?${params}`);
+      state.lastPage = res.meta.last_page;
+      state.total = res.meta.total;
+
+      grid.innerHTML = res.data.length === 0
+        ? `<p class="card p-space-xl text-body-md text-on-surface-variant sm:col-span-2 lg:col-span-4">Нічого не знайдено — спробуйте інший запит.</p>`
+        : res.data.map(cardHtml).join('');
+
+      shown.innerHTML = `Показано <b class="text-on-surface">${res.data.length}</b> із <b class="text-on-surface">${res.meta.total}</b> товарів з API`;
+      pageLabel.textContent = `сторінка ${res.meta.current_page} з ${res.meta.last_page}`;
+      prevBtn.disabled = res.meta.current_page <= 1;
+      nextBtn.disabled = res.meta.current_page >= res.meta.last_page;
+    } catch {
+      grid.innerHTML = '';
+      errorBox.classList.remove('hidden');
+    }
+  }
+
+  async function openDetail(slug: string): Promise<void> {
+    dialogBody.innerHTML = `<div class="p-space-xl"><div class="skeleton h-64 w-full"></div></div>`;
+    dialog.showModal();
+    try {
+      const res = await api<{ data: RawDetail }>(`/products/${slug}`);
+      const p = res.data;
+
+      const image = p.images[0] ?? p.image;
+      const media = image ? `<img src="${image}" alt="${p.title}" class="h-full w-full object-cover" />` : `<span class="grid h-full place-items-center text-8xl">${p.emoji}</span>`;
+      const specs = p.full_specs.length > 0 ? p.full_specs : p.specs;
+      const specRows = specs.map(
+        ([k, v], i) => `<tr class="${i % 2 ? 'bg-slate-50/60' : 'bg-white'}"><td class="w-2/5 px-space-md py-2 text-slate-500">${k}</td><td class="px-space-md py-2 font-medium text-on-surface">${v}</td></tr>`,
+      ).join('');
+      const colors = p.colors.map(
+        (c) => `<span class="chip flex items-center gap-1"><span class="h-3 w-3 rounded-full border border-outline-variant" style="background:${c.hex}"></span>${c.name}</span>`,
+      ).join('');
+      const memory = p.memory.map((m) => `<span class="chip">${m}</span>`).join('');
+      const cashback = Math.round(p.price * 0.02);
+
+      dialogBody.innerHTML = `
+        <div class="grid gap-space-lg p-space-lg md:grid-cols-2">
+          <div class="card overflow-hidden p-0"><div class="aspect-square">${media}</div></div>
+          <div class="flex flex-col gap-space-sm">
+            <p class="text-caption text-outline uppercase tracking-wide">${p.category.name ?? p.brand}</p>
+            <h2 class="text-headline-lg leading-tight tracking-tight">${p.title}</h2>
+            <p class="text-body-sm text-on-surface-variant">Артикул: ${p.sku ?? '—'} · ★ <b>${p.rating.toFixed(1)}</b> (${p.reviews_count} відгуків)</p>
+            <div class="card bg-blue-50/60 p-space-md">
+              ${p.old_price ? `<p class="text-[13px] leading-4 text-tertiary line-through">${price(p.old_price)}</p>` : ''}
+              <p class="tabular text-[32px] font-extrabold leading-none text-on-surface">${price(p.price)}</p>
+              <p class="mt-1 text-body-sm text-on-surface-variant">Кешбек <b class="text-emerald-600">+${cashback} ₴</b> у «ТехноБонус»</p>
+            </div>
+            ${colors ? `<div class="flex flex-wrap gap-space-xs"><span class="text-body-sm font-semibold">Кольори:</span>${colors}</div>` : ''}
+            ${memory ? `<div class="flex flex-wrap gap-space-xs"><span class="text-body-sm font-semibold">Пам'ять:</span>${memory}</div>` : ''}
+            <p class="text-body-md leading-relaxed text-on-surface-variant">${p.short ?? ''}</p>
+          </div>
+        </div>
+        <div class="p-space-lg">
+          <h3 class="mb-space-sm text-body-md font-bold">Характеристики (з API)</h3>
+          <table class="w-full overflow-hidden rounded-lg text-body-sm"><tbody>${specRows}</tbody></table>
+        </div>`;
+    } catch {
+      dialogBody.innerHTML = `<div class="p-space-xl text-red-600">Не вдалося получити товар з API.</div>`;
+    }
+  }
+
+  chips.addEventListener('click', (event) => {
+    const btn = (event.target as HTMLElement).closest('[data-cat]') as HTMLElement | null;
+    if (btn === null) return;
+    state.category = btn.dataset.cat ?? '';
+    state.page = 1;
+    chips.querySelectorAll('[data-cat]').forEach((el) => el.classList.toggle('chip-active', el === btn));
+    void loadProducts();
+  });
+
+  sortSelect.addEventListener('change', () => {
+    state.sort = sortSelect.value;
+    state.page = 1;
+    void loadProducts();
+  });
+
+  searchInput.addEventListener('input', () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      state.q = searchInput.value.trim();
+      state.page = 1;
+      void loadProducts();
+    }, 350);
+  });
+
+  prevBtn.addEventListener('click', () => {
+    state.page -= 1;
+    void loadProducts();
+  });
+  nextBtn.addEventListener('click', () => {
+    state.page += 1;
+    void loadProducts();
+  });
+  grid.addEventListener('click', (event) => {
+    const card = (event.target as HTMLElement).closest('[data-slug]') as HTMLElement | null;
+    if (card !== null) void openDetail(card.dataset.slug!);
+  });
+
+  void loadStats();
+  void loadCategories();
+  void loadProducts();
+</script>
+
+<style>
+  .skeleton {
+    display: inline-block;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #eef1f6 25%, #f6f8fb 50%, #eef1f6 75%);
+    background-size: 200% 100%;
+    animation: tp-skeleton 1.2s ease-in-out infinite;
+  }
+  .skeleton + .skeleton { margin-top: 0; }
+  @keyframes tp-skeleton {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  .chip-active {
+    border-color: #2563eb;
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+</style>

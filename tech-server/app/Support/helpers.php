@@ -52,3 +52,44 @@ if (! function_exists('spec_pair')) {
         return [$label, (string) $row[$label]];
     }
 }
+
+if (! function_exists('string_list')) {
+    /**
+     * Normalize JSON values to a plain list of non-empty strings.
+     *
+     * Column values may come as a list (["a", "b"]), an assoc map, or — in older
+     * seed data — a single string, which Laravel collections would otherwise
+     * explode into per-character items.
+     *
+     * @return list<string>
+     */
+    function string_list(mixed $value): array
+    {
+        if (is_string($value)) {
+            return $value !== '' ? [$value] : [];
+        }
+
+        if (! is_array($value)) {
+            return [];
+        }
+
+        $items = array_is_list($value) ? $value : array_values($value);
+
+        return array_values(array_filter($items, fn ($item): bool => is_string($item) && $item !== ''));
+    }
+}
+
+if (! function_exists('image_list')) {
+    /**
+     * List of image URLs for a product (https://...), [] when none.
+     *
+     * @return list<string>
+     */
+    function image_list(mixed $value): array
+    {
+        return array_values(array_filter(
+            string_list($value),
+            fn (string $item): bool => str_starts_with($item, 'http'),
+        ));
+    }
+}

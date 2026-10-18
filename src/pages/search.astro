@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductCard from '../components/ProductCard.astro';
-import { products, categories } from '../data/products.js';
+import { categories } from '../data/products.js';
 ---
 <BaseLayout
   title="Пошук товарів — ТЕХНОПРОСТІР"
@@ -20,7 +19,7 @@ import { products, categories } from '../data/products.js';
           Пошук: <span class="text-blue-600" data-search-q>всі товари</span>
         </h1>
         <p class="mt-1 text-body-md text-on-surface-variant">
-          Знайдено <b class="tabular text-on-surface" data-search-count>{products.length}</b> товарів
+          Знайдено <b class="tabular text-on-surface" data-search-count>…</b> товарів з API
           <span data-search-cat-label class="hidden"></span>
         </p>
       </div>
@@ -42,7 +41,16 @@ import { products, categories } from '../data/products.js';
     </div>
 
     <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" data-search-grid>
-      {products.map((p) => <ProductCard product={p} variant="grid" />)}
+      {Array.from({ length: 8 }).map(() => (
+        <div class="card flex flex-col gap-space-sm overflow-hidden p-0">
+          <div class="skeleton aspect-square w-full"></div>
+          <div class="flex flex-col gap-space-sm p-space-md">
+            <div class="skeleton h-4 w-1/3"></div>
+            <div class="skeleton h-5 w-3/4"></div>
+            <div class="skeleton h-7 w-2/5"></div>
+          </div>
+        </div>
+      ))}
     </div>
 
     <!-- Empty state -->
@@ -60,41 +68,71 @@ import { products, categories } from '../data/products.js';
   </div>
 
   <script>
-    import { categories } from '../data/products.js';
+    import { apiGet, cardHtml, ensureApiStyles, type ApiProduct, type Paginated } from '../lib/api';
+
+    ensureApiStyles();
 
     const params = new URLSearchParams(window.location.search);
-    const q = (params.get('q') ?? '').trim().toLowerCase();
+    const q = (params.get('q') ?? '').trim();
     const cat = params.get('cat') ?? '';
 
     const qLabel = document.querySelector('[data-search-q]');
     const countEl = document.querySelector('[data-search-count]');
     const catLabel = document.querySelector('[data-search-cat-label]');
     const input = document.querySelector('[data-search-input]');
-    const cards = Array.from(document.querySelectorAll('[data-search-grid] [data-product-card]'));
-    const empty = document.querySelector('[data-search-empty]');
+    const grid = document.querySelector<HTMLElement>('[data-search-grid]');
+    const empty = document.querySelector<HTMLElement>('[data-search-empty]');
 
     if (input instanceof HTMLInputElement && q) input.value = q;
     if (qLabel) qLabel.textContent = q || 'всі товари';
 
-    const catName = cat ? (categories.find((c) => c.slug === cat)?.name ?? '') : '';
-    if (catLabel && catName) {
-      catLabel.classList.remove('hidden');
-      catLabel.textContent = ` у категорії «${catName}»`;
+    if (cat) {
+      void apiGet<{ data: Array<{ slug: string; name: string }> }>('/categories')
+        .then((res) => {
+          const catName = res.data.find((c) => c.slug === cat)?.name ?? '';
+          if (catLabel && catName) {
+            catLabel.classList.remove('hidden');
+            catLabel.textContent = ` у категорії «${catName}»`;
+          }
+        })
+        .catch(() => {});
     }
 
-    let shown = 0;
-    for (const card of cards) {
-      const haystack = card.dataset.search ?? '';
-      const matchesQ = !q || haystack.includes(q);
-      const matchesCat = !cat || card.dataset.category === cat;
-      const visible = matchesQ && matchesCat;
-      card.classList.toggle('hidden', !visible);
-      if (visible) shown += 1;
-    }
-    if (countEl) countEl.textContent = String(shown);
-    if (empty instanceof HTMLElement) {
-      empty.classList.toggle('hidden', shown !== 0);
-      empty.style.display = shown === 0 ? 'flex' : '';
-    }
+    const sp = new URLSearchParams();
+    if (q) sp.set('q', q);
+    if (cat) sp.set('category', cat);
+    sp.set('per_page', '24');
+
+    void apiGet<Paginated<ApiProduct>>(`/products?${sp}`)
+      .then((res) => {
+        if (!grid) return;
+        grid.innerHTML = res.data.map((p) => cardHtml(p, 'grid')).join('');
+        if (countEl) countEl.textContent = String(res.meta.total);
+        if (empty) {
+          const none = res.data.length === 0;
+          empty.classList.toggle('hidden', !none);
+          empty.style.display = none ? 'flex' : 'none';
+        }
+      })
+      .catch(() => {
+        if (grid) {
+          grid.innerHTML =
+            '<p class="card p-space-lg text-body-md text-red-600 sm:col-span-2 lg:col-span-4">API недоступний — не вдалося виконати пошук.</p>';
+        }
+      });
   </script>
+
+  <style is:global>
+    .skeleton {
+      display: inline-block;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #eef1f6 25%, #f6f8fb 50%, #eef1f6 75%);
+      background-size: 200% 100%;
+      animation: tp-skeleton 1.2s ease-in-out infinite;
+    }
+    @keyframes tp-skeleton {
+      from { background-position: 200% 0; }
+      to { background-position: -200% 0; }
+    }
+  </style>
 </BaseLayout>
