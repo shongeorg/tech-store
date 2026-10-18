@@ -1,0 +1,77 @@
+{{-- Футер (дизайн: Footer.astro) --}}
+@php($footerCategories = \App\Models\Category::where('is_active', true)->orderBy('sort')->limit(6)->get())
+<footer class="mt-12 border-t border-outline-variant bg-surface-container-lowest">
+    <div class="shell grid grid-cols-1 gap-space-xl py-10 sm:grid-cols-2 lg:grid-cols-5">
+        <div class="flex flex-col gap-space-sm">
+            <a href="{{ route('home') }}" class="flex items-center gap-2">
+                <span class="grid h-9 w-9 place-items-center rounded-lg bg-blue-600 text-lg font-black text-white">T</span>
+                <span class="text-[17px] font-extrabold tracking-tight">
+                    ТЕХНО<span class="text-blue-600">ПРОСТІР</span>
+                </span>
+            </a>
+            <p class="max-w-xs text-body-sm text-on-surface-variant">
+                Провідний омніканальний рітейлер електроніки та побутової техніки в Україні. Офіційна техніка,
+                широкий вибір логістика і бездоганний сервіс.
+            </p>
+            <a href="tel:0800300777" class="text-headline-sm font-bold text-blue-700">0 800 300 777</a>
+            <p class="text-body-sm text-on-surface-variant">Безкоштовно по Україні<br/>support@technoprostir.ua</p>
+            <p class="text-body-sm text-on-surface-variant">Графік роботи: Пн–Нд 08:00 – 21:00</p>
+            <p class="text-body-sm text-on-surface-variant">м. Київ, вул. Хрещатик, 22</p>
+        </div>
+
+        <div>
+            <h3 class="mb-space-md text-body-md font-bold">Каталог товарів</h3>
+            <ul class="flex flex-col gap-space-sm text-body-sm text-on-surface-variant">
+                @foreach ($footerCategories as $c)
+                    <li><a href="{{ route('catalog.category', $c->slug) }}" class="hover:text-primary">{{ $c->name }}</a></li>
+                @endforeach
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="mb-space-md text-body-md font-bold">Покупцям</h3>
+            <ul class="flex flex-col gap-space-sm text-body-sm text-on-surface-variant">
+                @foreach (['Доставка Новою Поштою', 'Способи оплати', 'Офіційна гарантія 1–3 роки', 'Обмін і повернення 14 днів', 'Програма лояльності «ТехноБонус»', 'Відстеження замовлень'] as $b)
+                    <li><a href="#" class="hover:text-primary">{{ $b }}</a></li>
+                @endforeach
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="mb-space-md text-body-md font-bold">Про компанію</h3>
+            <ul class="flex flex-col gap-space-sm text-body-sm text-on-surface-variant">
+                @foreach (['Про Технопростір', 'Мережа магазинів в Україні', 'Прес-центр', 'Кар’єра та вакансії', 'Політика конфіденційності', 'Публічна оферта'] as $c)
+                    <li><a href="#" class="hover:text-primary">{{ $c }}</a></li>
+                @endforeach
+            </ul>
+        </div>
+
+        <div>
+            <h3 class="mb-space-md text-body-md font-bold">Оплата та доставка</h3>
+            <div class="flex flex-wrap gap-space-xs">
+                @foreach (['VISA', 'Mastercard', 'Apple Pay', 'Google Pay', 'Privat24', 'mono', 'Нова Пошта', 'Meest'] as $p)
+                    <span class="rounded-md border border-outline-variant bg-surface px-2 py-1 text-[11px] font-semibold text-on-surface-variant">{{ $p }}</span>
+                @endforeach
+            </div>
+            <p class="mb-space-xs mt-space-md text-caption text-outline">Мобільні застосунки</p>
+            <div class="flex flex-wrap gap-space-xs">
+                <span class="flex items-center gap-1 rounded-md bg-slate-900 px-2.5 py-1.5 text-[11px] font-semibold text-white">
+                    <span class="material-symbols-outlined text-[14px]">smartphone</span> App Store
+                </span>
+                <span class="flex items-center gap-1 rounded-md bg-slate-900 px-2.5 py-1.5 text-[11px] font-semibold text-white">
+                    <span class="material-symbols-outlined text-[14px]">play_arrow</span> Google Play
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-inverse-surface text-inverse-on-surface">
+        <div class="shell flex flex-col items-center justify-between gap-space-sm py-3 text-caption md:flex-row">
+            <p>© {{ date('Y') }} ТОВ «Технопростір Україна». Всі права захищені. Ціни вказано з урахуванням ПДВ.</p>
+            <p class="flex items-center gap-space-md">
+                <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Всі системи працюють стабільно</span>
+                <span>ISO 27001 Certified Retailer</span>
+            </p>
+        </div>
+    </div>
+</footer>
